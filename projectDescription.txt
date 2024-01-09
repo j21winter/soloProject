@@ -1,1 +1,24 @@
 Solo Project Description
+
+Name: 
+    Jonathan Winter
+Github Link :
+    https://github.com/j21winter/soloProject.git
+Project Name: 
+    Teeny Twine
+Description: 
+    This app allows parents to input their child size dimensions (height, weight) and output the clothing brand, type of clothing and size that will fit their child now! 
+    Each clothing brand has differing size guides. This app allows you to universally pick the right size for your child. 
+Stack: 
+    MERN
+MVP: 
+    Create account
+    Add children
+    Search clothing guides of 5 brands
+    Create wishlist 
+    Create sharable registry
+Bonus Features: 
+    Messaging - Socket.io to allow registry viewers to message the user.
+    Graph Display - ReCharts to build a graph to show child growth using reCharts, 
+    Login - Login and reg in React
+    Quick Search Component
