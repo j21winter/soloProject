@@ -1,0 +1,13 @@
+Front End
+    Build login and registration
+    Build all components
+    set up front end
+
+Back End
+    Model
+        consider using multiple schemas with relational db 
+    Routes
+        DONE- registration 
+        User- getOne, getAll, findByIdandUpdate, findByIdandDelete
+    Controllers
+        DONE- registration 
