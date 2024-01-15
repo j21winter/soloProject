@@ -1,6 +1,13 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
+// moved outside the schema to ensure async effect
+const isEmailUnique = async(email, userId)=> {
+    const query = {email, _id : { $ne : userId }};
+    let foundUser = await mongoose.models.User.findOne(query);
+    return !foundUser ;
+}
+
 const UserSchema = new mongoose.Schema({
     firstName : {
         type: String,
@@ -24,9 +31,8 @@ const UserSchema = new mongoose.Schema({
                 message: "Please enter a valid email"
             },
             {
-                validator: async val => {
-                    let foundUser = await mongoose.models.User.findOne({email : val})
-                    return !foundUser;
+                validator: async function (val, ) {
+                    isEmailUnique(val, this._id)
                 }, 
                 message: "Email already in use!"
         }]
@@ -38,15 +44,18 @@ const UserSchema = new mongoose.Schema({
         minlength : [8, 'Password must be 8 or more characters'],
         trim: true
     },
-    children: {
-        type: Array
-    },
-    wishList: {
-        type: Array
-    }, 
-    registries: {
-        type: Array
-    }
+    children: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Child"
+    }],
+    wishLists: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Wishlist'
+    }], 
+    registries: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Registry"
+    }]
 }, {timestamps : true});
 
 // MIDDLEWEAR
