@@ -18,12 +18,18 @@ const addChild = async (req,res) => {
         const updatedUser = await User.findByIdAndUpdate( parent._id, parent, {new: true, runValidators: true})
 
         // return confirmation
-        res.status(200).json({message: "Successful! ", data : updatedUser, child: newChild})
+        res.status(200).json({message: "Successful! ", parent : updatedUser, child: newChild})
     } catch (err) {
-        res.status(400).json({success: false, message:err.message})
+        res.status(400).json({success: false, error: err })
     }
 }
 // READ
+const findOneChild = (req, res) => {
+    Child.findOne({_id: req.params.id})
+        .then(child => res.status(200).json(child))
+        .catch(err => res.status(400).json(err))
+}
+
 const findChildren = (req, res) => {
     Child.find({parent : req.params.parentId})
         .then(children => res.status(200).json(children))
@@ -51,13 +57,13 @@ const updateChild = async (req, res) => {
         const updatedChild = await Child.findOneAndUpdate(
             { _id: currentChild._id },
             { 
-                $set: req.body, // update other fields
+                $set: {height: req.body.height , weight: req.body.weight},// update other fields
                 $push: { history: historicValue }, // push to the history array
             },
             { new: true, runValidators: true }
         ).lean();
 
-        res.status(200).json({ success: true, data: updatedChild });
+        res.status(200).json({ success: true, child: updatedChild });
         } catch (error) {
         console.error(error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
@@ -68,13 +74,13 @@ const deleteOne = async (req, res) => {
     // Should I Update the parent children list?
     try{
         // find the parent
-        const parent = await User.findOne({_id : req.body.parentId})
+        const parent = await User.findOne({_id : req.params.parentId})
         // remove the child from the parent list
-        const newChildrenList = parent.children.filter(child => child._id != req.params.id)
+        const newChildrenList = parent.children.filter(child => child._id != req.params.childId)
         // update  the parent with the new list
-        const updatedUser = await User.findByIdAndUpdate(req.body.parentId, {children : newChildrenList})
+        const updatedUser = await User.findByIdAndUpdate(req.params.parentId, {children : newChildrenList})
         // delete the child from the db
-        const deletedChild = await Child.findByIdAndDelete(req.params.id)
+        const deletedChild = await Child.findByIdAndDelete(req.params.childId)
 
         res.status(200).json({message: "Successful deletion", child: deletedChild})
     }catch (err){
@@ -85,5 +91,6 @@ module.exports = {
     addChild,
     updateChild, 
     findChildren,
+    findOneChild,
     deleteOne
 }

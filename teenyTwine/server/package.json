@@ -5,7 +5,7 @@
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "start": "node setup/sizeGuide.setup.js && nodemon server.js "
   },
   "keywords": [],
   "author": "",
@@ -19,5 +19,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.0.4",
     "socket.io": "^4.7.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.2"
   }
 }

@@ -5,7 +5,7 @@ const ItemSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    item : {
+    type : {
         type: String,
         required: true
     },
@@ -30,3 +30,5 @@ const ItemSchema = new mongoose.Schema({
         required: true
     }
 })
+
+module.exports = new mongoose.model("Item", ItemSchema)

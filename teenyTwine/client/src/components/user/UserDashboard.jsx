@@ -1,30 +1,18 @@
 import React, { useContext, useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import UserProfile from './UserProfile'
-import UserAccount from './UserAccount'
-import UserRegistry from './UserRegistry'
-import UserWishlist from './UserWishlist'
 import Header from '../Header'
+
+// WIDGETS
+import ProfileWidget from './widgets/profileWidget'
+import AddChildWidget from './widgets/AddChildWidget'
 
 import UserContext from '../context/userContext'
 
-const UserDashboard = () => {
+const UserDashboard = (props) => {
   const { user } = useContext(UserContext)
+  const {activeComponent} = props
   const navigate = useNavigate()
 
-  const [childInput, setChildInput] = useState({
-    name: "",
-    birthDate: "",
-    height: "",
-    weight: ""
-  })
-
-  const [childFormErrors, setChildFormErrors] = useState({
-    name: "",
-    birthDate: "",
-    height: "",
-    weight: ""
-  })
 
   useEffect(()=> {
     if(!user._id){
@@ -35,30 +23,11 @@ const UserDashboard = () => {
     }
   },[])
 
-  const handleChange = (e) => {
-    e.preventDefault()
-    console.log('updating state')
-
-    setChildInput(prevInput => ({
-      ...prevInput, 
-        [e.target.name] : e.target.value
-    }))
-  }
-
-  const validateNewChild = (e) => {
-    isValid = true
-
-    for( const field in childInput){
-      if(field == ""){
-        isValid = false
-      }
-    }
-  }
   return (
     <>
       <Header />
       {/* Delete h1 when ready */}
-      <h1>{user.firstName}</h1> 
+      <h1>{user.firstName}{user.lastName}</h1> 
       <div className='p-1 mx-auto vh-100'>
         {/* MAIN CONTENT */}
         <div className="dash d-flex justify-content-between h-75">
@@ -68,65 +37,16 @@ const UserDashboard = () => {
 
             {/* Your Profile */}
             <div className="widget border border-3 border-black">
-              <h3>Your Profile</h3>
-              <p>{user.firstName} {user.lastName}</p>
 
-              <table>
-                <thead>
-                  <tr>
-                    <th>Child Name</th>
-                    <th>Options</th>
-                  </tr>
-                </thead>
-                <tbody >
+              <ProfileWidget />
 
-                  {user.children.length > 0? (user.children.map((child, index) => (
-                    <tr key={index}>
-                      <td>{child.name}</td>
-                      <td>
-                        <div className='d-flex'>
-                          {/* Create ONCLICK events */}
-                          <button>Profile</button>
-                          <button>Delete</button>
-                        </div>
-                      </td>
-                    </tr>))
-                  ) : ""}
-
-                </tbody>
-              </table>
             </div>
 
             {/* Add A child form */}
             <div className="widget border border-3 border-black">
+              <AddChildWidget />
 
-              <h3>Add a Child</h3>
-
-              <form action="">
-
-                <div className="mb-3">
-                  <label htmlFor="name" className="form-label">Name:</label>
-                  <input type="text" name='name' className="form-control" onChange={e => handleChange(e)}/>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="birthDate" className="form-label">Birth Date:</label>
-                  <input type="date" name="birthDate"className="form-control"  onChange={e => handleChange(e)}/>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="height" className="form-label">Height (in):</label>
-                  <input type="number" name="height"className="form-control"  onChange={e => handleChange(e)}/>
-                </div>
-
-                <div className="mb-3">
-                  <label htmlFor="weight" className="form-label">Weight (lbs):</label>
-                  <input type="number" name="weight"className="form-control"  onChange={e => handleChange(e)}/>
-                </div>
-
-                <button className="btn btn-success">Add Child</button>
-
-              </form>
+              
             </div>
 
             {/* Quick Search */}
@@ -153,10 +73,7 @@ const UserDashboard = () => {
           {/* CENTER COLUMN */}
           <div className="mainStage border border-3 border-black col-8 p-3">
             {/* conditionally render components */}
-            <UserProfile />
-            <UserAccount />
-            <UserRegistry />
-            <UserWishlist />
+            {activeComponent}
           </div>
 
           {/* RIGHT COLUMN */}

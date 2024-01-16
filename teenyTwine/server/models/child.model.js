@@ -16,12 +16,12 @@ const ChildSchema = new mongoose.Schema({
 
     height: {
         type: Number,
-        required: [true, 'Child height date is required']
+        required: [true, 'Child height is required']
     },
 
     weight: {
         type: Number,
-        required: [true, 'Child height date is required']
+        required: [true, 'Child height is required']
     },
 
     history: [{
