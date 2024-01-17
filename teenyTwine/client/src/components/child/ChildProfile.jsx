@@ -1,6 +1,7 @@
 import React, {useEffect, useState, useContext} from 'react'
 import {useLocation} from 'react-router-dom'
 import axios from 'axios'
+import { LineChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ResponsiveContainer} from 'recharts'
 
 import UserContext from '../context/userContext'
 
@@ -10,15 +11,26 @@ const ChildProfile = () => {
     const { child } = location.state
     const [currentChild, setCurrentChild] = useState(child)
     const [matches, setMatches] = useState([])
+     // hold update form input
+    const [updateInput, setUpdateInput] = useState({
+      height: currentChild.height,
+      weight: currentChild.weight
+    })
+    const [growthRange, setGrowthRange] = useState({
 
+    })
     // ON MOUNT CALLS THE DB FOR THE ACTUAL CHILD
     useEffect(() => {
       console.log('getting one child' + child._id)
       const { _id } = child
       axios.get(`http://localhost:8000/api/child/${_id}`, {withCredentials: true})
         .then(res => {
-          console.log(res.data)
-          setCurrentChild(res.data)
+          let foundChild = res.data
+          setCurrentChild(foundChild)
+          setUpdateInput({
+            height: foundChild.height, 
+            weight: foundChild.weight
+          })
         })
         .catch(err => console.log(err))
       axios.get(`http://localhost:8000/api/items/${currentChild.height}/${currentChild.weight}`, {withCredentials: true})
@@ -28,11 +40,6 @@ const ChildProfile = () => {
         .catch(err => console.log(err))
     },[child])
 
-    // hold update form input
-    const [updateInput, setUpdateInput] = useState({
-      height: currentChild.height,
-      weight: currentChild.weight
-    })
 
     // HANDLE CHANGE IN THE FORM
     const handleChange = e => {
@@ -60,47 +67,108 @@ const ChildProfile = () => {
         .catch(err => console.log(err))
     }
 
+    // calculate matchtype in form
+    const matchType = item => {
+      let {height, weight} = currentChild
+      let {minHeight, maxHeight, minWeight, maxWeight} = item
+      if(height > minHeight && height < maxHeight && weight > minWeight && weight < maxWeight){
+        return (<p>100%</p>)
+      } else {
+        return (<p>50%</p>)
+      }
+    }
+
+    const convertDate = data => {
+      const parts = data.split('T')
+      const date = parts[0].split('-')
+
+      const newDate = [] 
+      const months = ['January', 'February', 'March','April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      
+      // month
+      newDate.push(months[date[1] -1])
+      // day
+      newDate.push(date[2])
+      // year
+      newDate.push(date[0])
+
+      return newDate.join(' ')
+    }
+
+    const ToolTipContent = (props) => {
+      if(!props.active || !props.payload){
+          return null
+      } else {
+        const data = props.payload[0].payload
+        return (
+          <div className='rounded rounded-2 bg-body-secondary text-center'>
+            <div>Height: {data.height}</div>
+            <div>Weight: {data.weight}</div>
+            <div>Day : {convertDate(data.dateAdded)}</div>
+          </div>
+        )
+      }
+    }
   return (
     <div>
-      <div className="head d-flex">
+      {/* HEADER */}
+      <div className="head d-flex w-100 h-25 justify-content-between align-items-center  ">
         <div className="left">
-          <h1>{currentChild.name}</h1>
-          <p>{currentChild.birthdate}</p>
-        </div>
-        <div className="stats d-flex">
-          <p>Stats:</p>
-          <table>
-            <tr>
-              <th>Height</th>
-              <td>{currentChild.height}</td>
-            </tr>
-            <tr>
-              <th>Weight</th>
-              <td>{currentChild.weight}</td>
-            </tr>
-            <tr>
-              <th>Last Updated</th>
-              <td>{currentChild.updatedAt}</td>
-            </tr>
-          </table>
-        </div>
-        <div className="update d-flex">
-          <p>Update</p>
-          <form onSubmit={e => updateChild(e)}>
-            <div className="mb-3">
-              <label htmlFor="height" className="form-label">Height:</label>
-              <input type="number" name='height' value={updateInput.height} className="form-control" onChange={e => handleChange(e)} />
-            </div>
-            <div className="mb-3">
-              <label htmlFor="weight" className="form-label">Weight:</label>
-              <input type="number" name='weight' value={updateInput.weight} className="form-control" onChange={e => handleChange(e)}/>
-            </div>
-            <button className='btn btn-info'>Update {currentChild.name}</button>
-          </form>
+          <p className='fs-1 m-0'>{currentChild.name} </p>
+          <p className='fs-6'>{convertDate(currentChild.birthDate)}</p>
         </div>
 
+        {/* STATS */}
+        <div className="stats d-flex align-items-center ">
+          <div className='d-flex'>
+            <form onSubmit={e => updateChild(e)} className='d-flex column-gap-2 '>
+
+              <div>
+                <div className="input_group input-group-sm d-flex column-gap-1 align-items-center  ">
+                  <label htmlFor="height">Height: </label>
+                  <input type="number" name='height' value={updateInput.height} className="form-control input-sm" onChange={e => handleChange(e)} />
+                </div>
+                <div className="input_group input-group-sm d-flex column-gap-1 align-items-center  ">
+                  <label htmlFor="weight">Weight: </label>
+                  <input type="number" name='weight' value={updateInput.weight} className="form-control input-sm" onChange={e => handleChange(e)} />
+                </div>
+              </div>
+
+              <div className='text-center' >
+                  <button className='btn btn-sm  btn-info m-0'>Update</button>
+                <div>
+                  <p className='m-0'><small>Last Updated:</small></p>
+                  <p><small>{convertDate(currentChild.updatedAt)}</small></p>
+                </div>
+              </div>
+
+            </form>
+          </div>
+        </div>
       </div>
+
+      {/* MATCHES TABLE */}
       <div className="matches">
+        <p className='fs-4'>Matching Garments</p>
+        {/* Add filterable options here! */}
+        <div className="searchFilters d-flex column-gap-3">
+          {/* use an onchange to sort matching list */}
+          <form>
+            <label htmlFor="filter">Filter by:</label>
+            <select name="filter" id="">
+              {/* POPULATE WITH OPTIONS FROM THE LIST */}
+              <option value="" disabled >Filter</option>
+            </select>
+          </form>
+          {/* use an onchange to sort matching list */}
+          <form>
+          <label htmlFor="sort">Sort by:</label>
+            <select name="sort" id="">
+              {/* POPULATE WITH OPTIONS FROM THE LIST */}
+              <option value="" disabled >Sort</option>
+            </select>
+          </form>
+        </div>
         <table className='table'>
           <thead>
             <tr>
@@ -112,12 +180,14 @@ const ChildProfile = () => {
             </tr>
           </thead>
           <tbody>
+
             {matches.map((item) => (
               <tr key={item._id}>
                 <td>{item.brand}</td>
                 <td>{item.type}</td>
                 <td>{item.size}</td>
-                <td>"calculate match"</td>
+                <td>{matchType(item)}
+                </td>
                 <td>
                   <div>
                     <button className='btn btn-secondary '>Wishlist</button>
@@ -126,10 +196,26 @@ const ChildProfile = () => {
                 </td>
               </tr>
             ))}
+
           </tbody>
         </table>
       </div>
       
+      {/* Growth Chart */}
+      <div className='h-100'>
+        <ResponsiveContainer width={500} height={200}>
+          <LineChart data={currentChild.history}>
+                <XAxis dataKey={"Time"} />
+                {/* Make domain dynamic with largest value in list */}
+                <YAxis dataKey={"Data"} domain={[0, 50]} type='number'/> 
+                <CartesianGrid stroke='grey' strokeDasharray='5 5'/>
+                <Line dataKey={'height'} stroke='purple' strokeWidth={3} isAnimationActive={false}/>
+                <Line dataKey={'weight'} stroke='pink' strokeWidth={3} isAnimationActive={false}/>
+                <Legend />
+                <Tooltip content={ToolTipContent}/>
+          </LineChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   )
 }

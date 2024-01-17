@@ -26,31 +26,29 @@ const UserDashboard = (props) => {
   return (
     <>
       <Header />
-      {/* Delete h1 when ready */}
-      <h1>{user.firstName}{user.lastName}</h1> 
       <div className='p-1 mx-auto vh-100'>
         {/* MAIN CONTENT */}
         <div className="dash d-flex justify-content-between h-75">
 
           {/* LEFT COLUMN  */}
-          <div className="leftColumn border border-3 border-black col-2">
+          <div className="leftColumn col-2">
 
             {/* Your Profile */}
-            <div className="widget border border-3 border-black">
+            <div className="widget border border-1 border-black">
 
               <ProfileWidget />
 
             </div>
 
             {/* Add A child form */}
-            <div className="widget border border-3 border-black">
+            <div className="widget border border-1 border-black">
               <AddChildWidget />
 
               
             </div>
 
             {/* Quick Search */}
-            <div className="widget border border-3 border-black">
+            <div className="widget border border-1 border-black">
               <h3>Quick Search</h3>
               <form action="">
 
@@ -71,16 +69,16 @@ const UserDashboard = (props) => {
           </div>
 
           {/* CENTER COLUMN */}
-          <div className="mainStage border border-3 border-black col-8 p-3">
+          <div className="mainStage border border-1 border-black col-8 p-3">
             {/* conditionally render components */}
             {activeComponent}
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="rightColumn border border-3 border-black col-2">
+          <div className="rightColumn col-2">
 
             {/* My Wishlist */}
-            <div className="widget border border-3 border-black">
+            <div className="widget border border-1 border-black">
               <h3>Wishlists</h3>
               {/* <table>
                 <thead>

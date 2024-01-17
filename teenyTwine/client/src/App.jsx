@@ -14,6 +14,10 @@ import UserWishlist from './components/user/UserWishlist'
 import ChildProfile from './components/child/ChildProfile'
 
 function App() {
+// ! save user to local storage to persist refreshes
+// const updateLocalStorage = (items) => {
+//   localStorage.setItem('selectedItems', JSON.stringify(items));
+// };
 
 const [user, setUser] = useState({})
 
