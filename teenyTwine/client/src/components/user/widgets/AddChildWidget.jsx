@@ -55,6 +55,7 @@ const AddChildWidget = () => {
         e.preventDefault()
         let child = {...childInput}
         console.log(child)
+        
         if(!validateNewChild(child)){
             return console.log("errors with validation")
         }
@@ -64,7 +65,9 @@ const AddChildWidget = () => {
                 console.log(res)
                 // update user in dom 
                 setUser(prevUser => {
-                    return {...prevUser, ["children"] : [...prevUser.children, res.data.child]}
+                    return {...prevUser, 
+                        ["children"] : [...prevUser.children, res.data.child], 
+                        ["wishlists"] : [...prevUser.wishlists, res.data.wishlist]}
                 })
                 // reset input fields
                 setChildInput({

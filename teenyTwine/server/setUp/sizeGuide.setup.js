@@ -15,15 +15,14 @@ const gerber = [
     {brand: 'gerber', type: 'clothes', size:'3T' , minWeight: 32, maxWeight: 35, minHeight: 34, maxHeight: 38},
     {brand: 'gerber', type: 'clothes', size:'4T' , minWeight: 35, maxWeight: 39, minHeight: 38, maxHeight: 40},
     {brand: 'gerber', type: 'clothes', size:'5T' , minWeight: 39, maxWeight: 43, minHeight: 40, maxHeight: 44},
-
-    {brand: 'gerber', type: 'clothes', size:'6M' , minWeight: 12, maxWeight: 16, minHeight: 24, maxHeight: 27},
-    {brand: 'gerber', type: 'clothes', size:'12M' , minWeight: 16, maxWeight: 20, minHeight: 27, maxHeight: 30},
-    {brand: 'gerber', type: 'clothes', size:'18M' , minWeight: 20, maxWeight: 24, minHeight: 30, maxHeight: 33},
-    {brand: 'gerber', type: 'clothes', size:'24M' , minWeight: 24, maxWeight: 28, minHeight: 33, maxHeight: 35},
-    {brand: 'gerber', type: 'clothes', size:'2T' , minWeight: 24, maxWeight: 28, minHeight: 33, maxHeight: 35},
-    {brand: 'gerber', type: 'clothes', size:'3T' , minWeight: 28, maxWeight: 32, minHeight: 35, maxHeight: 39},
-    {brand: 'gerber', type: 'clothes', size:'4T' , minWeight: 32, maxWeight: 36, minHeight: 39, maxHeight: 42},
-    {brand: 'gerber', type: 'clothes', size:'5T' , minWeight: 36, maxWeight: 42, minHeight: 42, maxHeight: 44},
+    {brand: 'gerber', type: 'pajamas', size:'6M' , minWeight: 12, maxWeight: 16, minHeight: 24, maxHeight: 27},
+    {brand: 'gerber', type: 'pajamas', size:'12M' , minWeight: 16, maxWeight: 20, minHeight: 27, maxHeight: 30},
+    {brand: 'gerber', type: 'pajamas', size:'18M' , minWeight: 20, maxWeight: 24, minHeight: 30, maxHeight: 33},
+    {brand: 'gerber', type: 'pajamas', size:'24M' , minWeight: 24, maxWeight: 28, minHeight: 33, maxHeight: 35},
+    {brand: 'gerber', type: 'pajamas', size:'2T' , minWeight: 24, maxWeight: 28, minHeight: 33, maxHeight: 35},
+    {brand: 'gerber', type: 'pajamas', size:'3T' , minWeight: 28, maxWeight: 32, minHeight: 35, maxHeight: 39},
+    {brand: 'gerber', type: 'pajamas', size:'4T' , minWeight: 32, maxWeight: 36, minHeight: 39, maxHeight: 42},
+    {brand: 'gerber', type: 'pajamas', size:'5T' , minWeight: 36, maxWeight: 42, minHeight: 42, maxHeight: 44},
 ]
     
 const carters = [
@@ -49,8 +48,10 @@ async function setUp(sizeGuide){
             useNewUrlParser: true,
             useUnifiedTopology: true,
         })
+        const dataBrand = sizeGuide[0]["brand"]
+        console.log(dataBrand)
 
-        const existingData = await Item.find()
+        const existingData = await Item.find({brand : dataBrand })
 
         if(existingData.length === 0) {
             await Item.create(sizeGuide)

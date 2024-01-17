@@ -6,15 +6,58 @@ const createList = (req, res) => {
         .then(newList => res.status(200).json(newList))
         .catch(err => res.status(400).json(err))
 }
+
+const createChildList = async (data) => {
+    try {
+        const newWishList = await Wishlist.create(data)
+        return newWishList
+    } catch (err) {
+        console.log(err)
+    }
+}
 // READ
 const findAllLists = (req, res) => {
     Wishlist.find({parent: req.params.parentId})
         .then(allWishlists => res.status(200).json(allWishlists))
-        .catch(err => res.status(400).json(err))
+        .catch(err => {
+            console.log(err)
+            res.status(400).json(err)
+        })
 }
 // UPDATE
-// TODO how to add and remove items from a list
-// TODO Consider an on page out update and use the updated dom to update the db
+const addItem = (req, res) => {
+    const {itemId, wishListId} = req.params
+    Wishlist.findOneAndUpdate(
+        {_id : wishListId}, 
+        {
+            $push: {items : itemId}
+        },
+        { new: true, runValidators: true }
+    )
+    .then(UpdatedWishList => {
+        res.status(200).json(UpdatedWishList)
+    })
+    .catch(err => {
+        res.status(400).json(err)
+    })
+}
+
+const removeItem = (req, res) => {
+    const {itemId, wishListId} = req.params
+    WishList.findOneAndUpdate(
+        {_id : wishListId}, 
+        {
+            $pull : {items : itemId}
+        }, 
+        { new: true, runValidators: true }
+    )
+    .then(UpdatedWishList => {
+        res.status(200).json(UpdatedWishList)
+    })
+    .catch(err => {
+        res.status(400).json(err)
+    })
+}
 
 // DELETE
 const deleteList = async (req, res) => {
@@ -37,5 +80,8 @@ const deleteList = async (req, res) => {
 module.exports = {
     createList,
     findAllLists,
-    deleteList
+    deleteList,
+    addItem,
+    removeItem,
+    createChildList
 }

@@ -1,26 +1,38 @@
 const User = require('../models/user.model');
 const Child = require('../models/child.model');
+const WishlistController = require('../controllers/wishlist.controller')
 
 // CREATE 
 // ensure the user id is already in the form
 const addChild = async (req,res) => {
+    console.log(req.body)
     try{
         // Save new child
         const newChild = await Child.create(req.body)
+        console.log(newChild)
+        console.log(req.body.parent)
+        // Create + save new wishlist for the child
+        const newWishList = await WishlistController.createChildList({
+            title: newChild.name,
+            child: newChild._id,
+            parent: req.body.parent,
+        })
+        console.log("BACK IN CHILD")
+        console.log(newWishList)
 
         // find parent/user and add child _id to children list
-        const parent = await User.findOne({_id : req.body.parent})
-
-        // ADD CHILD OBJECT TO PARENT CHILDREN LIST
-        parent.children.push(newChild._id)
-
-        // update parent with new child in children list
-        const updatedUser = await User.findByIdAndUpdate( parent._id, parent, {new: true, runValidators: true})
+        const updatedUser = await User.findOneAndUpdate(
+            {_id : req.body.parent}, 
+            { 
+                $push : { children: newChild._id, wishlists: newWishList}
+            }, 
+            { new: true, runValidators: true }
+        )
 
         // return confirmation
-        res.status(200).json({message: "Successful! ", parent : updatedUser, child: newChild})
+        res.status(200).json({message: "Successful! ", parent : updatedUser, child: newChild, wishlist: newWishList})
     } catch (err) {
-        res.status(400).json({success: false, error: err })
+        res.status(400).json({success: false, error: err.message })
     }
 }
 // READ
@@ -65,7 +77,6 @@ const updateChild = async (req, res) => {
 
         res.status(200).json({ success: true, child: updatedChild });
         } catch (error) {
-        console.error(error);
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };

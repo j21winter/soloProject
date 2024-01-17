@@ -19,5 +19,6 @@ require('./config/mongoose.config');
 require('./routes/user.routes')(app)
 require('./routes/child.routes')(app)
 require('./routes/item.routes')(app)
+require('./routes/wishlist.routes')(app)
 
 app.listen(port, () => console.log(`listening on port: ${port}`));

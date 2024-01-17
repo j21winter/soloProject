@@ -48,7 +48,7 @@ const UserSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Child"
     }],
-    wishLists: [{
+    wishlists: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Wishlist'
     }], 

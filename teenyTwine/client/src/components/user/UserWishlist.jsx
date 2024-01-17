@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useContext } from 'react'
+import UserContext from '../context/userContext'
 
 const UserWishlist = () => {
+  const {user} = useContext(UserContext)
+
   return (
-    <div>UserWishlist</div>
+    <>Wishlist</>
   )
 }
 

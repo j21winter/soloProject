@@ -5,6 +5,7 @@ import Header from '../Header'
 // WIDGETS
 import ProfileWidget from './widgets/profileWidget'
 import AddChildWidget from './widgets/AddChildWidget'
+import WishListWidget from './widgets/WishListWidget'
 
 import UserContext from '../context/userContext'
 
@@ -78,27 +79,7 @@ const UserDashboard = (props) => {
           <div className="rightColumn col-2">
 
             {/* My Wishlist */}
-            <div className="widget border border-1 border-black">
-              <h3>Wishlists</h3>
-              {/* <table>
-                <thead>
-                  <tr>
-                    <th>Child</th>
-                    <th>Item</th>
-                    <th>Match Type</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {user.wishlist.map((wishObject, index) => (
-                    <tr key={index}>
-                      <td>{wishObject.childName}</td>
-                      <td>{wishObject.item.brand},{wishObject.item.type},{wishObject.item.size}</td>
-                      <td>{wishObject.item.matchType}</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table> */}
-            </div>
+              <WishListWidget />
 
             {/* Registries */}
             {/* <div className="widget border border-3 border-black">
