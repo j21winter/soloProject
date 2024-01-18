@@ -1,11 +1,12 @@
 import React, {useContext} from 'react'
 import UserContext from '../../context/userContext'
+import {Link} from 'react-router-dom'
 
 const WishListWidget = () => {
     const {user} = useContext(UserContext)
     console.log(user)
   return (
-    <div>
+    <div className='text-center'>
         <p>My WishLists</p>
         <table className='table'>
         <thead>
@@ -25,6 +26,7 @@ const WishListWidget = () => {
           ))}
         </tbody>
         </table>
+        <Link to={'/user/wishlist'} className='btn btn-secondary '>View / Create Wishlists</Link>
   </div>
   )
 }

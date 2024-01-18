@@ -9,7 +9,7 @@ const WishlistSchema = new mongoose.Schema({
     child : {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Child",
-        required: true
+        required: false
     },
     parent : {
         type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +19,7 @@ const WishlistSchema = new mongoose.Schema({
     items : [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Item",
-        required: true
+        required: false
     }]
 }, {timestamps: true});
 

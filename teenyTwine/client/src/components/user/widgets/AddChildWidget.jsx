@@ -63,6 +63,9 @@ const AddChildWidget = () => {
         axios.post('http://localhost:8000/api/child/new', child, {withCredentials: true}) //add authorization token
             .then(res => {
                 console.log(res)
+                console.log("!!!!!!RES!!!!!!")
+                console.log(res.data.child)
+                console.log(res.data.wishlist)
                 // update user in dom 
                 setUser(prevUser => {
                     return {...prevUser, 

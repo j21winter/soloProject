@@ -10,16 +10,15 @@ const addChild = async (req,res) => {
     try{
         // Save new child
         const newChild = await Child.create(req.body)
-        console.log(newChild)
-        console.log(req.body.parent)
+
         // Create + save new wishlist for the child
         const newWishList = await WishlistController.createChildList({
             title: newChild.name,
             child: newChild._id,
             parent: req.body.parent,
         })
-        console.log("BACK IN CHILD")
-        console.log(newWishList)
+
+        newWishList.child = newChild
 
         // find parent/user and add child _id to children list
         const updatedUser = await User.findOneAndUpdate(
@@ -106,21 +105,6 @@ const deleteOne = async (req, res) => {
         res.status(400).json({success:false, error: err})
     }
 }
-
-        // // find the parent
-        // const parent = await User.findOne({_id : req.params.parentId})
-        // // remove the child from the parent list
-        // const newChildrenList = parent.children.filter(child => child._id != req.params.childId)
-        // // update  the parent with the new list
-        // const updatedUser = await User.findByIdAndUpdate(req.params.parentId, {children : newChildrenList})
-        // // delete the child from the db
-        // const deletedChild = await Child.findByIdAndDelete(req.params.childId)
-        // const deletedWishlist = await WishlistController.findOneAndDelete()
-
-    //     res.status(200).json({message: "Successful deletion", child: deletedChild})
-    // }catch (err){
-    //     res.status(400).json(err)
-    // }}
 
 module.exports = {
     addChild,
