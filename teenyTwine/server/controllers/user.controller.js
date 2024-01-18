@@ -1,5 +1,6 @@
 const User = require('../models/user.model');
 const Child = require('../models/child.model');
+const Wishlist = require('../models/wishlist.model')
 const jwt = require('jsonwebtoken');
 const cookie = require('cookie-parser');
 const bcrypt = require('bcrypt')
@@ -23,7 +24,14 @@ const register = (req, res) => {
 
 // login user
 const login = async(req, res) => {
-        const possibleUser = await User.findOne({ email: req.body.email }).populate("children");
+        const possibleUser = await User.findOne({ email: req.body.email })
+            .populate("children")
+            .populate({
+                path: "wishlists", 
+                populate: {
+                    path: "items", 
+                    path: "child"
+                }});
     
         if(!possibleUser) {
             // email not found in users collection

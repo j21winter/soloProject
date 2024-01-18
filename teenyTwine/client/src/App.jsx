@@ -20,6 +20,7 @@ function App() {
 // };
 
 const [user, setUser] = useState({})
+const [child, setChild] = useState({})
 
 const saveLoggedInUser = userData => {
   console.log("saving", userData)
@@ -29,7 +30,7 @@ const saveLoggedInUser = userData => {
 
   return (
     <>
-      <UserContext.Provider value={{user, setUser, saveLoggedInUser}}>
+      <UserContext.Provider value={{user, setUser, child, setChild, saveLoggedInUser}}>
           <Routes>
               <Route path='/' element={<Navigate to="/login"/>} />  
               <Route path='/login' element={<LoginAndReg />} />

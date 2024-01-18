@@ -15,13 +15,15 @@ const WishListWidget = () => {
             <th># Items</th>
             </tr>
         </thead>
-        {user.wishlists && user.wishlists.map((wishlist) => (
-            <tr key={wishlist._id}>
-            <td>{wishlist.title}</td>
-            <td>{wishlist.child.name}</td>
-            <td>{wishlist.items.length}</td>
-            </tr>
-        ))}
+        <tbody>
+          {user.wishlists && user.wishlists.map((wishlist) => (
+              <tr key={wishlist._id}>
+              <td>{wishlist.title}</td>
+              <td>{wishlist.child.name}</td>
+              <td>{wishlist.items.length}</td>
+              </tr>
+          ))}
+        </tbody>
         </table>
   </div>
   )

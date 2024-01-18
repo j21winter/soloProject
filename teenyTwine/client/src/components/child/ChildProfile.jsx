@@ -1,14 +1,11 @@
 import React, {useEffect, useState, useContext} from 'react'
-import {useLocation} from 'react-router-dom'
 import axios from 'axios'
 import { LineChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ResponsiveContainer} from 'recharts'
 
 import UserContext from '../context/userContext'
 
 const ChildProfile = () => {
-    const {user, setUser} = useContext(UserContext)
-    const location = useLocation()
-    const { child } = location.state
+    const {user, setUser, child, setChild} = useContext(UserContext)
     const [currentChild, setCurrentChild] = useState(child)
     const [matches, setMatches] = useState([])
      // hold update form input
@@ -16,9 +13,7 @@ const ChildProfile = () => {
       height: currentChild.height,
       weight: currentChild.weight
     })
-    const [growthRange, setGrowthRange] = useState({
 
-    })
     // ON MOUNT CALLS THE DB FOR THE ACTUAL CHILD
     useEffect(() => {
       console.log('getting one child' + child._id)

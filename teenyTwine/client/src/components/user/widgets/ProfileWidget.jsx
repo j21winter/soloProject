@@ -4,19 +4,20 @@ import {Link} from 'react-router-dom'
 import axios from 'axios'
 
 const ProfileWidget = () => {
-    const { user, setUser } = useContext(UserContext)
+    const { user, setUser, setChild } = useContext(UserContext)
 
-    const deleteChild = (e, id) => {
+    const deleteChild = (e, child) => {
         e.preventDefault()
         console.log('DELETING')
-        console.log(id)
-        axios.delete(`http://localhost:8000/api/child/${id}/${user._id}`,{withCredentials: true})
+        console.log(child)
+        axios.delete(`http://localhost:8000/api/child/${child._id}/${user._id}`,{data: {child: child}, withCredentials: true})
             .then(res => {
                 console.log(res)
                 // update user DOM
                 setUser( prevUser => ({
                     ...prevUser, 
-                        ["children"] : prevUser.children.filter(child => child._id !== id)
+                        ["children"] : prevUser.children.filter(someChild => someChild._id !== child._id), 
+                        ["wishlists"] : prevUser.wishlists.filter(wishlist => wishlist.child !== child._id)
                 }))
             })
 
@@ -36,7 +37,7 @@ const ProfileWidget = () => {
                 </tr>
             </thead>
             <tbody >
-                {user.children.map((child, index) => (
+                {user.children.map((child) => (
                     
                     <tr key={child['_id']}>
                         <td>{child["name"]}</td>
@@ -44,8 +45,8 @@ const ProfileWidget = () => {
                         <td>
                         <div className='d-flex'>
                             {/* Create ONCLICK events */}
-                            <Link to={`/user/child/${child._id}`} state={{ child : child}} className='btn btn-secondary'>Profile</Link>
-                            <button onClick={(e) => deleteChild(e, child._id)} className='btn btn-danger' >Delete</button>
+                            <Link to={`/user/child/${child._id}`} onClick={() => setChild(child)} className='btn btn-secondary'>Profile</Link>
+                            <button onClick={(e) => deleteChild(e, child)} className='btn btn-danger' >Delete</button>
                         </div>
                         </td>
                     </tr>))}

@@ -1,6 +1,7 @@
 const User = require('../models/user.model');
 const Child = require('../models/child.model');
 const WishlistController = require('../controllers/wishlist.controller')
+const Wishlist = require('../models/wishlist.model')
 
 // CREATE 
 // ensure the user id is already in the form
@@ -80,23 +81,46 @@ const updateChild = async (req, res) => {
         res.status(500).json({ success: false, message: 'Internal Server Error' });
     }
 };
+
 // DELETE
 const deleteOne = async (req, res) => {
-    // Should I Update the parent children list?
-    try{
-        // find the parent
-        const parent = await User.findOne({_id : req.params.parentId})
-        // remove the child from the parent list
-        const newChildrenList = parent.children.filter(child => child._id != req.params.childId)
-        // update  the parent with the new list
-        const updatedUser = await User.findByIdAndUpdate(req.params.parentId, {children : newChildrenList})
-        // delete the child from the db
-        const deletedChild = await Child.findByIdAndDelete(req.params.childId)
 
-        res.status(200).json({message: "Successful deletion", child: deletedChild})
-    }catch (err){
-        res.status(400).json(err)
-    }}
+    const {child} = req.body
+
+    try{
+        // delete the child from the DB
+        const deletedChild = await Child.findByIdAndDelete({_id : child._id})
+        // delete the wishlist associated with the child
+        const deletedWishlist = await Wishlist.findOneAndDelete({title: child.name, child: child._id})
+        // Update the parent child and wishlist arrays by pulling specific objects
+        const updatedParent = await User.findByIdAndUpdate(
+            {_id: req.params.parentId}, 
+            {
+                $pull : {children: deletedChild._id, wishlists: deletedWishlist._id}
+            },
+            { new: true, runValidators: true }
+        )
+
+        res.status(200).json({success:true, deletedChild: deletedChild, deletedWishlist: deletedWishlist, updatedUser: updatedParent})
+    } catch (err) {
+        res.status(400).json({success:false, error: err})
+    }
+}
+
+        // // find the parent
+        // const parent = await User.findOne({_id : req.params.parentId})
+        // // remove the child from the parent list
+        // const newChildrenList = parent.children.filter(child => child._id != req.params.childId)
+        // // update  the parent with the new list
+        // const updatedUser = await User.findByIdAndUpdate(req.params.parentId, {children : newChildrenList})
+        // // delete the child from the db
+        // const deletedChild = await Child.findByIdAndDelete(req.params.childId)
+        // const deletedWishlist = await WishlistController.findOneAndDelete()
+
+    //     res.status(200).json({message: "Successful deletion", child: deletedChild})
+    // }catch (err){
+    //     res.status(400).json(err)
+    // }}
 
 module.exports = {
     addChild,
