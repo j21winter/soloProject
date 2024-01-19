@@ -1,13 +1,13 @@
 import React, { useContext, useState, useEffect} from 'react'
 import { useNavigate } from 'react-router-dom'
-import Header from '../Header'
+import Header from '../../Header'
 
 // WIDGETS
-import ProfileWidget from './widgets/profileWidget'
-import AddChildWidget from './widgets/AddChildWidget'
-import WishListWidget from './widgets/WishListWidget'
+import ProfileWidget from '../../widgets/ProfileWidget'
+import AddChildWidget from '../../widgets/AddChildWidget'
+import WishListWidget from '../../widgets/WishListWidget'
 
-import UserContext from '../context/userContext'
+import UserContext from '../../../context/userContext'
 
 const UserDashboard = (props) => {
   const { user } = useContext(UserContext)

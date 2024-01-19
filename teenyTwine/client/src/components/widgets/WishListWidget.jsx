@@ -20,7 +20,7 @@ const WishListWidget = () => {
           {user.wishlists && user.wishlists.map((wishlist) => (
               <tr key={wishlist._id}>
               <td>{wishlist.title}</td>
-              <td>{wishlist.child.name}</td>
+              <td>{wishlist.child === null ? "none" : wishlist.child.name}</td>
               <td>{wishlist.items.length}</td>
               </tr>
           ))}

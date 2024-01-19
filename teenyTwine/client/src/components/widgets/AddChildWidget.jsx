@@ -62,10 +62,6 @@ const AddChildWidget = () => {
 
         axios.post('http://localhost:8000/api/child/new', child, {withCredentials: true}) //add authorization token
             .then(res => {
-                console.log(res)
-                console.log("!!!!!!RES!!!!!!")
-                console.log(res.data.child)
-                console.log(res.data.wishlist)
                 // update user in dom 
                 setUser(prevUser => {
                     return {...prevUser, 
@@ -112,14 +108,14 @@ const AddChildWidget = () => {
 
             <div className="mb-3">
                 <label htmlFor="height" className="form-label">Height (in):</label>
-                <input type="number" name="height"className="form-control" value={childInput.height}  onChange={e => handleChange(e)}/>
+                <input type="number" name="height" className="form-control" value={childInput.height} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.height ? <p className='text-warning'>{childFormErrors.height.message}</p> : ""}
 
 
             <div className="mb-3">
                 <label htmlFor="weight" className="form-label">Weight (lbs):</label>
-                <input type="number" name="weight"className="form-control" value={childInput.weight} onChange={e => handleChange(e)}/>
+                <input type="number" name="weight"className="form-control" value={childInput.weight} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>            
             {childFormErrors.weight ? <p className='text-warning'>{childFormErrors.weight.message}</p> : ""}
 

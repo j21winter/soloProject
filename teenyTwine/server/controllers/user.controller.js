@@ -13,7 +13,7 @@ const register = (req, res) => {
         .then(newUser => {
             const userToken = jwt.sign({
                 id: newUser._id
-            }, secret_key)
+            }, secret_key, {expiresIn: '1h'})
             res.cookie('userToken', userToken, {
                 httpOnly: true
                 })
@@ -28,10 +28,11 @@ const login = async(req, res) => {
             .populate("children")
             .populate({
                 path: "wishlists", 
-                populate: {
-                    path: "items", 
-                    path: "child"
-                }});
+                populate: [
+                    {path: "items"}, 
+                    {path: "child"}
+                ]
+                });
     
         if(!possibleUser) {
             // email not found in users collection

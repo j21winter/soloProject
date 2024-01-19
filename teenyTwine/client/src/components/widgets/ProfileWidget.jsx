@@ -13,11 +13,14 @@ const ProfileWidget = () => {
         axios.delete(`http://localhost:8000/api/child/${child._id}/${user._id}`,{data: {child: child}, withCredentials: true})
             .then(res => {
                 console.log(res)
+                const {deletedChild, deletedWishlist} = res.data
+                console.log("DELETED wishlist")
+                console.log(deletedWishlist)
                 // update user DOM
                 setUser( prevUser => ({
                     ...prevUser, 
-                        ["children"] : prevUser.children.filter(someChild => someChild._id !== child._id), 
-                        ["wishlists"] : prevUser.wishlists.filter(wishlist => wishlist.child !== child._id)
+                        ["children"] : prevUser.children.filter(someChild => someChild._id !== deletedChild._id), 
+                        ["wishlists"] : prevUser.wishlists.filter(someWishlist => someWishlist._id !== deletedWishlist._id)
                 }))
             })
 

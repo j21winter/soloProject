@@ -1,13 +1,13 @@
 import React, { useContext, useEffect, useState } from 'react'
-import UserContext from '../context/userContext'
+import UserContext from '../../../context/userContext'
 import axios from 'axios'
 
 const UserWishlist = () => {
-  const {user} = useContext(UserContext)
+  const {user, setUser} = useContext(UserContext)
   const [organizedList, setOrganizedList] = useState({})
   const [wishlistFormInput, setWishlistFormInput] = useState({
     title: "",
-    child: "",
+    child: null,
     parent: user._id
   })
   const [formErrors, setFormErrors] = useState({
@@ -63,16 +63,25 @@ const UserWishlist = () => {
       return newWishlist
     }
 
-    axios.post('http://localhost:8000/api/wishlist/new', newWishlist, {wishCredentials: true})
-      .then(createdWishlist => console.log(createdWishlist))
+    axios.post('http://localhost:8000/api/wishlist/new', newWishlist , {withCredentials: true})
+      .then(res => {
+        setUser(prevUser => ({
+          ...prevUser,
+            ["wishlists"] : [...prevUser.wishlists, res.data.newWishlist]
+        }))
+        setWishlistFormInput({
+          title: "",
+          child: null,
+          parent: user._id})
+      })
       .catch(err => console.log(err))
   }
 
   // calculate matchtype in form
-  const matchType = item => {
-    let {height, weight} = currentChild
+  const matchType = (item, wishlist) => {
+    let {height, weight} = wishlist.child
     let {minHeight, maxHeight, minWeight, maxWeight} = item
-    if(height > minHeight && height < maxHeight && weight > minWeight && weight < maxWeight){
+    if(height >= minHeight && height <= maxHeight && weight >= minWeight && weight <= maxWeight){
       return (<p>100%</p>)
     } else {
       return (<p>50%</p>)
@@ -95,12 +104,11 @@ const UserWishlist = () => {
             <div className="d-flex ">
               <label htmlFor="child" className='form-label'>Child (optional):</label>
               <select name="child" id="childSelect" className='form-select' onChange={(e) => formChangeHandler(e)} >
-                <option value="">none</option>
+                <option value="null" >none</option>
                 {user.children.map((child) => (
                   <option key={child._id} value={child.name}>{child.name}</option>
                 ))}
               </select>
-              {/* <input type="text" className='form-control' name="child"/> */}
             </div>
             <button type="submit" className='btn btn-success'>Create List</button>
           </form>
@@ -138,11 +146,11 @@ const UserWishlist = () => {
             </tr>
           </thead>
           <tbody>
-            {displayWishlist.items && displayWishlist.items.map((item) => (
+            {!displayWishlist.items ? "" : displayWishlist.items.map((item) => (
               <tr key={item._id}>
                 <td>{item.brand}</td>
                 <td>{item.type}</td>
-                <td>{matchType(item)}</td>
+                <td>{matchType(item, displayWishlist)}</td>
                 <td>
                   <div>
                     <button>add to...</button>

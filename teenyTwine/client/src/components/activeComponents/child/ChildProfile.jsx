@@ -1,8 +1,8 @@
 import React, {useEffect, useState, useContext} from 'react'
 import axios from 'axios'
-import { LineChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ResponsiveContainer} from 'recharts'
+import { LineChart, XAxis, YAxis, CartesianGrid, Line, Tooltip, Legend, ResponsiveContainer, ErrorBar} from 'recharts'
 
-import UserContext from '../context/userContext'
+import UserContext from '../../../context/userContext'
 
 const ChildProfile = () => {
     const {user, setUser, child, setChild} = useContext(UserContext)
@@ -35,6 +35,32 @@ const ChildProfile = () => {
         .catch(err => console.log(err))
     },[child])
 
+    // get all matches and get all matches for every update of the current child
+    useEffect(() => {
+      axios.get(`http://localhost:8000/api/items/${currentChild.height}/${currentChild.weight}`, {withCredentials: true})
+        .then(res => {
+          setMatches(res.data)
+        })
+        .catch(err => console.log(err))
+    },[currentChild])
+
+    // convert date format
+    const convertDate = data => {
+      const parts = data.split('T')
+      const date = parts[0].split('-')
+
+      const newDate = [] 
+      const months = ['January', 'February', 'March','April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
+      
+      // month
+      newDate.push(months[date[1] -1])
+      // day
+      newDate.push(date[2])
+      // year
+      newDate.push(date[0])
+
+      return newDate.join(' ')
+    }
 
     // HANDLE CHANGE IN THE FORM
     const handleChange = e => {
@@ -57,7 +83,7 @@ const ChildProfile = () => {
       axios.patch(`http://localhost:8000/api/child/${child._id}`, updateInfo, {withCredentials: true})
         .then(res => {
           console.log(res.data.child)
-          setCurrentChild( res.data.child)
+          setCurrentChild(res.data.child)
         })
         .catch(err => console.log(err))
     }
@@ -66,29 +92,25 @@ const ChildProfile = () => {
     const matchType = item => {
       let {height, weight} = currentChild
       let {minHeight, maxHeight, minWeight, maxWeight} = item
-      if(height > minHeight && height < maxHeight && weight > minWeight && weight < maxWeight){
+      if(height >= minHeight && height <= maxHeight && weight >= minWeight && weight <= maxWeight){
         return (<p>100%</p>)
       } else {
         return (<p>50%</p>)
       }
     }
 
-    const convertDate = data => {
-      const parts = data.split('T')
-      const date = parts[0].split('-')
+    // Add Item to wishlist
+    const addToWishList = (e, item) => {
+      e.preventDefault()
+      const wishlistId = e.target.elements.addToList.value
+      console.log(wishlistId)
+      console.log(item._id)
 
-      const newDate = [] 
-      const months = ['January', 'February', 'March','April','May', 'June', 'July', 'August', 'September', 'October', 'November', 'December']
-      
-      // month
-      newDate.push(months[date[1] -1])
-      // day
-      newDate.push(date[2])
-      // year
-      newDate.push(date[0])
-
-      return newDate.join(' ')
+      axios.patch(`http://localhost:8000/api/wishlist/add/${wishlistId}/${item._id}`,{}, {withCredentials: true})
+        .then(res => console.log(res))
+        .catch(err => console.log(err))
     }
+
 
     const ToolTipContent = (props) => {
       if(!props.active || !props.payload){
@@ -185,8 +207,14 @@ const ChildProfile = () => {
                 </td>
                 <td>
                   <div>
-                    <button className='btn btn-secondary '>Wishlist</button>
-                    <button className='btn btn-secondary '>Registry</button>
+                    <form onSubmit={(e) => addToWishList(e, item)}>
+                      <select name="addToList" id="addToList" >
+                        {user.wishlists.map((wishlist) => (
+                          <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                        ))}
+                      </select>
+                      <button type='submit'>Add</button>
+                    </form>
                   </div>
                 </td>
               </tr>

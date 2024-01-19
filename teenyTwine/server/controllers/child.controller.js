@@ -10,10 +10,10 @@ const addChild = async (req,res) => {
     try{
         // Save new child
         const newChild = await Child.create(req.body)
-
+        console.log(newChild)
         // Create + save new wishlist for the child
         const newWishList = await WishlistController.createChildList({
-            title: (newChild.name + "'s Wishlist"),
+            title: (newChild.name),
             child: newChild._id,
             parent: req.body.parent,
         })
@@ -28,11 +28,11 @@ const addChild = async (req,res) => {
             }, 
             { new: true, runValidators: true }
         )
-
+        
         // return confirmation
         res.status(200).json({message: "Successful! ", parent : updatedUser, child: newChild, wishlist: newWishList})
     } catch (err) {
-        res.status(400).json({success: false, error: err.message })
+        res.status(400).json({success: false, error: err })
     }
 }
 // READ
@@ -85,12 +85,21 @@ const updateChild = async (req, res) => {
 const deleteOne = async (req, res) => {
 
     const {child} = req.body
+    console.log("!!!!! DELETING !!!!!")
+    console.log(child)
+    const {parentId} = req.params
+    console.log( parentId)
 
     try{
         // delete the child from the DB
         const deletedChild = await Child.findByIdAndDelete({_id : child._id})
+        console.log("child deletion successful")
+        console.log(deletedChild)
         // delete the wishlist associated with the child
         const deletedWishlist = await Wishlist.findOneAndDelete({title: child.name, child: child._id})
+        console.log("wishlist deletion successful")
+        console.log(deletedWishlist)
+
         // Update the parent child and wishlist arrays by pulling specific objects
         const updatedParent = await User.findByIdAndUpdate(
             {_id: req.params.parentId}, 
@@ -99,6 +108,9 @@ const deleteOne = async (req, res) => {
             },
             { new: true, runValidators: true }
         )
+        console.log("parent update successful")
+        console.log({deletedChild,deletedWishlist,updatedParent})
+
 
         res.status(200).json({success:true, deletedChild: deletedChild, deletedWishlist: deletedWishlist, updatedUser: updatedParent})
     } catch (err) {

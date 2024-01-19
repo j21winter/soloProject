@@ -2,16 +2,16 @@ import { useState } from 'react'
 import {Routes, Route, Navigate} from 'react-router-dom'
 
 // COMPONENTS
-import UserDashboard from './components/user/UserDashboard'
+import UserDashboard from './components/activeComponents/user/UserDashboard'
 import LoginAndReg from './components/auth/LoginAndReg'
-import UserContext from './components/context/userContext'
+import UserContext from './context/userContext'
 
-import UserProfile from './components/user/UserProfile'
-import UserAccount from './components/user/UserAccount'
-import UserRegistry from './components/user/UserRegistry'
-import UserWishlist from './components/user/UserWishlist'
+import UserProfile from './components/activeComponents/user/UserProfile'
+import UserAccount from './components/activeComponents/user/UserAccount'
+import UserRegistry from './components/activeComponents/user/UserRegistry'
+import UserWishlist from './components/activeComponents/user/UserWishlist'
 
-import ChildProfile from './components/child/ChildProfile'
+import ChildProfile from './components/activeComponents/child/ChildProfile'
 
 function App() {
 // ! save user to local storage to persist refreshes
