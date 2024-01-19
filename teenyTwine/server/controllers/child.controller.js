@@ -13,7 +13,7 @@ const addChild = async (req,res) => {
 
         // Create + save new wishlist for the child
         const newWishList = await WishlistController.createChildList({
-            title: newChild.name,
+            title: (newChild.name + "'s Wishlist"),
             child: newChild._id,
             parent: req.body.parent,
         })
