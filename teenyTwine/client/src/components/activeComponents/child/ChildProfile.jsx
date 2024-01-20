@@ -235,7 +235,7 @@ const ChildProfile = () => {
       {/* Growth Chart */}
       <div className='h-100'>
         <ResponsiveContainer width={500} height={200}>
-          <LineChart data={currentChild.history}>
+          <LineChart data={[...currentChild.history, {height: currentChild.height, weight: currentChild.weight, dateAdded: currentChild.updatedAt}]}>
                 <XAxis dataKey={"Time"} />
                 {/* Make domain dynamic with largest value in list */}
                 <YAxis dataKey={"Data"} domain={[0, 50]} type='number'/> 

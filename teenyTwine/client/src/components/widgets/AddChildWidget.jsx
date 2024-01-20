@@ -25,7 +25,6 @@ const AddChildWidget = () => {
     // Onchange Handler
     const handleChange = (e) => {
         e.preventDefault()
-        console.log('updating state')
     
         setChildInput(prevInput => ({
             ...prevInput, 
@@ -89,38 +88,38 @@ const AddChildWidget = () => {
     
 
   return (
-    <div>
-        <h3>Add a Child</h3>
+    <div className='m-1 rounded rounded-2 overflow-auto p-2' style={{maxHeight: "49vh", backgroundColor: "#f5cac3"}}>
 
         <form onSubmit={ (e) => addChild(e)}>
-
-            <div className="mb-3">
-                <label htmlFor="name" className="form-label">Name:</label>
-                <input type="text" name='name' className="form-control" value={childInput.name} onChange={e => handleChange(e)}/>
+            <div className='d-flex justify-content-lg-between align-items-center'>
+                <p className='fs-4 ms-1 m-0' style={{color: "#84a59d"}}>Add a Child</p>
+                <button className="btn btn-sm me-1" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>submit</button>
+            </div>
+            <div className="input-group input-group-sm border-0 mb-1">
+                <label htmlFor="name" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Name:</label>
+                <input type="text" name='name' className="form-control border-0 text-end" value={childInput.name} onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.name ? <p className='text-warning'>{childFormErrors.name.message}</p> : ""}
 
-            <div className="mb-3">
-                <label htmlFor="birthDate" className="form-label">Birth Date:</label>
-                <input type="date" name="birthDate"className="form-control" value={childInput.birthDate} onChange={e => handleChange(e)}/>
+            <div className="input-group input-group-sm mb-1">
+                <label htmlFor="birthDate" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Birth Date:</label>
+                <input type="date" name="birthDate"className="form-control border-0 text-end" value={childInput.birthDate} onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.birthDate ? <p className='text-warning'>{childFormErrors.birthDate.message}</p> : ""}
 
-            <div className="mb-3">
-                <label htmlFor="height" className="form-label">Height (in):</label>
-                <input type="number" name="height" className="form-control" value={childInput.height} min={0} step="0.1" onChange={e => handleChange(e)}/>
+            <div className="input-group input-group-sm mb-1">
+                <label htmlFor="height" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Height (in):</label>
+                <input type="number" name="height" className="form-control border-0 text-end" value={childInput.height} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.height ? <p className='text-warning'>{childFormErrors.height.message}</p> : ""}
 
-
-            <div className="mb-3">
-                <label htmlFor="weight" className="form-label">Weight (lbs):</label>
-                <input type="number" name="weight"className="form-control" value={childInput.weight} min={0} step="0.1" onChange={e => handleChange(e)}/>
+            <div className="input-group input-group-sm mb-1">
+                <label htmlFor="weight" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Weight (lbs):</label>
+                <input type="number" name="weight"className="form-control border-0 text-end" value={childInput.weight} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>            
             {childFormErrors.weight ? <p className='text-warning'>{childFormErrors.weight.message}</p> : ""}
 
 
-            <button className="btn btn-success">Add Child</button>
 
         </form>
 

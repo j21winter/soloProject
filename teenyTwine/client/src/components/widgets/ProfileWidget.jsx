@@ -8,11 +8,8 @@ const ProfileWidget = () => {
 
     const deleteChild = (e, child) => {
         e.preventDefault()
-        console.log('DELETING')
-        console.log(child)
         axios.delete(`http://localhost:8000/api/child/${child._id}/${user._id}`,{data: {child: child}, withCredentials: true})
             .then(res => {
-                console.log(res)
                 if(res.deletedWishlist){
                     const {deletedChild, deletedWishlist} = res.data
                     // update user DOM
@@ -35,29 +32,28 @@ const ProfileWidget = () => {
     }
 
   return (
-    <div>
-        <h3>Your Profile</h3>
-        <p>{user.firstName} {user.lastName}</p>
+    <div className='rounded rounded-2 p-2 m-1 w-100 overflow-auto ' style={{maxHeight: "49vh", backgroundColor: "#f5cac3"}}>
+        <p className='fs-4 text-center m-0 ' style={{color: '#84a59d'}}>{user.firstName} {user.lastName}</p>
 
-        {user.children.length > 0 && (<table>
-            <thead>
+        {user.children.length > 0 && (
+        <table className='table table-borderless rounded rounded-3 overflow-hidden' style={{maxHeight: "10vh"}}>
+            <thead className='sticky-top'>
                 <tr>
-                <th>Child Name</th>
-                <th>Options</th>
+                    <th style={{color: '#f28482'}} className='text-center'>Children</th>
+                    <th style={{color: '#f28482'}} className='text-center'>Options</th>
                 </tr>
             </thead>
             <tbody >
                 {user.children.map((child) => (
                     
                     <tr key={child['_id']}>
-                        <td>{child["name"]}</td>
-                        {console.log(child)}
-                        <td>
-                        <div className='d-flex'>
-                            {/* Create ONCLICK events */}
-                            <Link to={`/user/child/${child._id}`} onClick={() => setChild(child)} className='btn btn-secondary'>Profile</Link>
-                            <button onClick={(e) => deleteChild(e, child)} className='btn btn-danger' >Delete</button>
-                        </div>
+                        <td className='text-center p-auto' >{child["name"]}</td>
+                        <td className='p-1'>
+                            <div className='d-flex justify-content-around p-1 rounded rounded-1' style={{backgroundColor: "#f7ede2"}}>
+                                {/* Create ONCLICK events */}
+                                <Link to={`/user/child/${child._id}`} onClick={() => setChild(child)} className='btn btn-sm me-3' style={{backgroundColor: "#f6bd60", color: "#ffffff"}}>view</Link>
+                                <button onClick={(e) => deleteChild(e, child)} className='btn btn-sm' style={{backgroundColor: "#f28482", color: "#ffffff"}}>delete</button>
+                            </div>
                         </td>
                     </tr>))}
             </tbody>
