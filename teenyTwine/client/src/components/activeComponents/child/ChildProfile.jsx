@@ -107,7 +107,15 @@ const ChildProfile = () => {
       console.log(item._id)
 
       axios.patch(`http://localhost:8000/api/wishlist/add/${wishlistId}/${item._id}`,{}, {withCredentials: true})
-        .then(res => console.log(res))
+        .then(res => {
+          console.log(res)
+          setUser(prevUser => ({
+              ...prevUser, 
+                  ['wishlists'] : prevUser["wishlists"].map((wishlist) => (
+                      wishlist._id === res.data._id ? res.data : wishlist
+                  )), 
+          }))
+        })
         .catch(err => console.log(err))
     }
 
@@ -208,12 +216,12 @@ const ChildProfile = () => {
                 <td>
                   <div>
                     <form onSubmit={(e) => addToWishList(e, item)}>
+                      <button type='submit'>Add to...</button>
                       <select name="addToList" id="addToList" >
                         {user.wishlists.map((wishlist) => (
                           <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
                         ))}
                       </select>
-                      <button type='submit'>Add</button>
                     </form>
                   </div>
                 </td>

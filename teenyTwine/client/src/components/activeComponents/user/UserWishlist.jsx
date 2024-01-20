@@ -17,13 +17,9 @@ const UserWishlist = () => {
 
   // combine and organize wishlists to children groups for display
   useEffect(() => {
-    console.log("USEEFFECT")
     const obj = {other: []}
-    console.log(obj)
 
     user.children.forEach(child => {obj[child.name] = []})
-
-    console.log(obj)
 
     user.wishlists.forEach(wishlist => {
 
@@ -37,7 +33,19 @@ const UserWishlist = () => {
     })
 
     setOrganizedList(obj)
+
+    // if(displayWishlist){
+    //   setDisplayWishList(()  => {
+    //     for(let i = 0; i < user.wishlists.length; i++){
+    //       if(user.wishlists[i]._id === displayWishlist._id){
+    //         return user.wishlists[i]
+    //       }
+    //     }
+    //   })
+    // }
   }, [user.wishlists])
+
+
 
   // on Change handler
   const formChangeHandler = (e) => {
@@ -74,11 +82,17 @@ const UserWishlist = () => {
           child: null,
           parent: user._id})
       })
-      .catch(err => console.log(err))
+      .catch(err => {
+        console.log(err)
+        setFormErrors({title: err.response.data.errors.title.message})
+      })
   }
 
   // calculate matchtype in form
   const matchType = (item, wishlist) => {
+    if(!wishlist.child){
+      return "n/a"
+    }
     let {height, weight} = wishlist.child
     let {minHeight, maxHeight, minWeight, maxWeight} = item
     if(height >= minHeight && height <= maxHeight && weight >= minWeight && weight <= maxWeight){
@@ -86,6 +100,60 @@ const UserWishlist = () => {
     } else {
       return (<p>50%</p>)
     }
+  }
+
+  // Add Item to wishlist
+  const addToWishList = (e, item) => {
+    e.preventDefault()
+    const wishlistId = e.target.elements.addToList.value
+
+    axios.patch(`http://localhost:8000/api/wishlist/add/${wishlistId}/${item._id}`,{}, {withCredentials: true})
+      .then(res => {
+        setUser(prevUser => ({
+          ...prevUser,
+            ["wishlists"] : prevUser.wishlists.map((wishlist) => (
+              wishlist._id == wishlistId ? res.data : wishlist
+            ))
+        }))
+      })
+      .catch(err => console.log(err))
+  }
+
+  // Remove Item from wishlist
+  const removeFromWishlist = async (e, item) => {
+    console.log("Removing Items")
+    e.preventDefault()
+    try {
+      const updatedWishlist = await axios.patch(`http://localhost:8000/api/wishlist/remove/${displayWishlist._id}/${item._id}`, {}, {withCredentials: true})
+      console.log(updatedWishlist)
+      const updatedUser = await setUser(prevUser => ({
+        ...prevUser, 
+            ["wishlists"] : prevUser.wishlists.map((wishlist) => (
+                wishlist._id == updatedWishlist.data._id ? updatedWishlist.data : wishlist
+            ))
+            }))
+      const updatedDisplayWishlist = setDisplayWishList(prevWishlist => ({
+        ...prevWishlist, 
+            ['items'] : prevWishlist.items.filter((someItem) => someItem._id != item._id)
+      }))
+    } catch (err) {
+      console.log(err)
+    }
+  }
+
+  // Delete Wishlist
+  const deleteWishlist = (e, wishlist) => {
+    e.preventDefault()
+
+    axios.delete(`http://localhost:8000/api/wishlist/${wishlist._id}`, {data: {parentId: user._id, }, withCredentials: true})
+      .then(res => { 
+        const deletedWishlist = res.data.deletedList
+        setUser(prevUser => ({
+            ...prevUser, 
+                ['wishlists'] : prevUser.wishlists.filter(wishlist => wishlist._id != deletedWishlist._id)
+        }))
+        console.log(res)})
+      .catch(err => console.log(err))
   }
 
   return (
@@ -96,11 +164,13 @@ const UserWishlist = () => {
         <div className=''>
           Create a Wishlist
           <form onSubmit={(e) => submitWishlist(e)} >
+
             <div className="d-flex ">
               <label htmlFor="title" className='form-label'>Title:</label>
               <input type="text" className='form-control' value={wishlistFormInput.title} onChange={(e) => formChangeHandler(e)} name="title"/>
               {formErrors.title ? <p>{formErrors.title}</p> : ""}
             </div>
+
             <div className="d-flex ">
               <label htmlFor="child" className='form-label'>Child (optional):</label>
               <select name="child" id="childSelect" className='form-select' onChange={(e) => formChangeHandler(e)} >
@@ -110,27 +180,50 @@ const UserWishlist = () => {
                 ))}
               </select>
             </div>
+
             <button type="submit" className='btn btn-success'>Create List</button>
           </form>
         </div>
       </div>
 
     {/* Categorized wishlists */}
-      <div className="">
-        {Object.entries(organizedList).map(([childName, wishlistArr]) => (
-          <div key={childName}>
-            <p>{childName}</p>
-            <ul>
-              {wishlistArr.map((wishlist) => (
-                <li key={wishlist._id}>
-                  <div className='d-flex'>
-                    <p className='text-primary' onClick={() => setDisplayWishList(wishlist)}>{wishlist.title}</p>
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-        ))}
+      <div className="d-flex justify-content-between text-start ">
+        <div className="left w-50">
+          {Object.entries(organizedList).filter(([childName, wishlistArr]) => childName != "other").map(([childName, wishlistArr]) => (
+            <div key={childName}>
+              <p>{childName}</p>
+              <ul>
+                {wishlistArr.map((wishlist) => (
+                  <li key={wishlist._id}>
+                    <div className='d-flex justify-content-between w-50'>
+                      <p className='text' >{wishlist.title}</p>
+                      <button className='btn btn-info ' onClick={() => setDisplayWishList(wishlist)}>View</button>
+                      <button className='btn btn-danger' onClick={(e) => deleteWishlist(e, wishlist)}>delete</button>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </div>
+        <div className="right w-50 text-start">
+          {Object.entries(organizedList).filter(([childName, wishlistArr]) => childName === "other").map(([childName, wishlistArr]) => (
+              <div key={childName}>
+                <p>{childName}</p>
+                <ul>
+                  {wishlistArr.map((wishlist) => (
+                    <li key={wishlist._id}>
+                      <div className='d-flex justify-content-between w-50'>
+                        <p className='text-primary' >{wishlist.title}</p>
+                        <button className='btn btn-info ' onClick={() => setDisplayWishList(wishlist)}>View</button>
+                        <button className='btn btn-danger' onClick={(e) => deleteWishlist(e, wishlist)}>delete</button>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+        </div>
       </div>
       
       {/* display wishlist table */}
@@ -153,8 +246,17 @@ const UserWishlist = () => {
                 <td>{matchType(item, displayWishlist)}</td>
                 <td>
                   <div>
-                    <button>add to...</button>
-                    <button>remove</button>
+                  <div>
+                    <form onSubmit={(e) => addToWishList(e, item)}>
+                      <button type='submit'>Add to...</button>
+                      <select name="addToList" id="addToList" >
+                        {user.wishlists.map((wishlist) => (
+                          wishlist._id === displayWishlist._id ? "" : <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                        ))}
+                      </select>
+                    </form>
+                  </div>
+                    <button onClick={e => removeFromWishlist(e, item)}>remove</button>
                     <button>own/claim</button>
                   </div>
                 </td>

@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 
 // moved outside the schema to ensure async effect
-const isEmailUnique = async(email, userId)=> {
+const isEmailUnique = async (email, userId)=> {
     const query = {email, _id : { $ne : userId }};
     let foundUser = await mongoose.models.User.findOne(query);
     return !foundUser ;
@@ -31,8 +31,8 @@ const UserSchema = new mongoose.Schema({
                 message: "Please enter a valid email"
             },
             {
-                validator: async function (val, ) {
-                    isEmailUnique(val, this._id)
+                validator: function (val ) {
+                    return isEmailUnique(val, this._id)
                 }, 
                 message: "Email already in use!"
         }]

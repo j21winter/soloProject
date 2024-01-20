@@ -85,36 +85,44 @@ const updateChild = async (req, res) => {
 const deleteOne = async (req, res) => {
 
     const {child} = req.body
-    console.log("!!!!! DELETING !!!!!")
-    console.log(child)
     const {parentId} = req.params
-    console.log( parentId)
 
     try{
         // delete the child from the DB
         const deletedChild = await Child.findByIdAndDelete({_id : child._id})
-        console.log("child deletion successful")
-        console.log(deletedChild)
-        // delete the wishlist associated with the child
-        const deletedWishlist = await Wishlist.findOneAndDelete({title: child.name, child: child._id})
-        console.log("wishlist deletion successful")
-        console.log(deletedWishlist)
 
-        // Update the parent child and wishlist arrays by pulling specific objects
-        const updatedParent = await User.findByIdAndUpdate(
-            {_id: req.params.parentId}, 
-            {
-                $pull : {children: deletedChild._id, wishlists: deletedWishlist._id}
-            },
-            { new: true, runValidators: true }
-        )
-        console.log("parent update successful")
-        console.log({deletedChild,deletedWishlist,updatedParent})
+        // does the wishlist exist or has it been deleted?
+        const wishlistExists = await Wishlist.findOne({title: child.name, child: child._id})
 
+        if(wishlistExists){
+            // delete the wishlist associated with the child
+            const deletedWishlist = await Wishlist.findOneAndDelete({title: child.name, child: child._id})
 
-        res.status(200).json({success:true, deletedChild: deletedChild, deletedWishlist: deletedWishlist, updatedUser: updatedParent})
+            // update the parent too remove child and wishlist
+            const updatedParent = await User.findByIdAndUpdate(
+                {_id: req.params.parentId}, 
+                {
+                    $pull : {children: deletedChild._id, wishlists: deletedWishlist._id}
+                },
+                { new: true, runValidators: true }
+            )
+            // send response with deletedWishlist
+            res.status(200).json({success:true, deletedChild, deletedWishlist, updatedParent})
+        } else {
+            // update the parent to remove only the child
+            const updatedParent = await User.findByIdAndUpdate(
+                {_id: req.params.parentId}, 
+                {
+                    $pull : {children: deletedChild._id}
+                },
+                { new: true, runValidators: true }
+            )
+            // send response without wishlist
+            res.status(200).json({success:true, deletedChild, updatedParent})
+        }
+
     } catch (err) {
-        res.status(400).json({success:false, error: err})
+        res.status(400).json({success:false, err})
     }
 }
 

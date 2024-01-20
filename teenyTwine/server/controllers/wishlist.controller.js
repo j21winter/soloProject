@@ -51,9 +51,9 @@ const addItem = (req, res) => {
             $push: {items : itemId}
         },
         { new: true, runValidators: true }
-    )
+    ).populate('items').populate('child')
     .then(UpdatedWishList => {
-        res.status(200).json(UpdatedWishList)
+        res.status(200).json(UpdatedWishList, )
     })
     .catch(err => {
         res.status(400).json(err)
@@ -62,13 +62,13 @@ const addItem = (req, res) => {
 
 const removeItem = (req, res) => {
     const {itemId, wishListId} = req.params
-    WishList.findOneAndUpdate(
+    Wishlist.findOneAndUpdate(
         {_id : wishListId}, 
         {
             $pull : {items : itemId}
         }, 
         { new: true, runValidators: true }
-    )
+    ).populate('items').populate('child')
     .then(UpdatedWishList => {
         res.status(200).json(UpdatedWishList)
     })
@@ -80,16 +80,17 @@ const removeItem = (req, res) => {
 // DELETE
 const deleteList = async (req, res) => {
     try{
-        // find the parent
-        const parent = await User.findOne({_id : req.body.parentId})
-        // remove the wishlist from the parent wishLists
-        const newWishlistList = parent.wishLists.filter(wishList => wishList._id != req.params.id)
-        // update  the parent with the new list
-        const updatedUser = await User.findByIdAndUpdate(req.body.parentId, {wishlists : newnewWishlistListRegList})
-        // delete the list from the db
         const deletedList = await Wishlist.findByIdAndDelete(req.params.id)
+        // find the parent
+        const updatedParent = await User.findOneAndUpdate(
+            {_id : req.body.parentId}, 
+            {
+                $pull : {wishlists: req.params.id}
+            }, 
+            {new: true, runValidators: true}
+        )
 
-        res.status(200).json({message: "Successful deletion", reg: deletedList})
+        res.status(200).json({message: "Successful deletion", deletedList, updatedParent})
     }catch (err){
         res.status(400).json(err)
     }}
