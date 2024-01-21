@@ -88,12 +88,11 @@ const AddChildWidget = () => {
     
 
   return (
-    <div className='m-1 rounded rounded-2 overflow-auto p-2' style={{maxHeight: "49vh", backgroundColor: "#f5cac3"}}>
+    <div className='m-1 rounded rounded-2 overflow-auto shadow-lg ' style={{maxHeight: "49vh", backgroundColor: "#e9edc9"}}>
 
         <form onSubmit={ (e) => addChild(e)}>
-            <div className='d-flex justify-content-lg-between align-items-center'>
-                <p className='fs-4 ms-1 m-0' style={{color: "#84a59d"}}>Add a Child</p>
-                <button className="btn btn-sm me-1" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>submit</button>
+            <div className='d-flex justify-content-between align-items-center ps-2 pe-2 mb-1'  style={{color: '#ffffff', backgroundColor: "#26637b"}}>
+                <p className='fs-5 ms-1 m-0'>Add a Child</p>
             </div>
             <div className="input-group input-group-sm border-0 mb-1">
                 <label htmlFor="name" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Name:</label>
@@ -119,7 +118,7 @@ const AddChildWidget = () => {
             </div>            
             {childFormErrors.weight ? <p className='text-warning'>{childFormErrors.weight.message}</p> : ""}
 
-
+            <button className="btn btn-sm w-100 rounded-top-0 " style={{backgroundColor: "#84a59d", color: "#ffffff"}}>submit</button>
 
         </form>
 

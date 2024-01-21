@@ -16,7 +16,6 @@ const ChildProfile = () => {
 
     // ON MOUNT CALLS THE DB FOR THE ACTUAL CHILD
     useEffect(() => {
-      console.log('getting one child' + child._id)
       const { _id } = child
       axios.get(`http://localhost:8000/api/child/${_id}`, {withCredentials: true})
         .then(res => {
@@ -35,6 +34,7 @@ const ChildProfile = () => {
         .catch(err => console.log(err))
     },[child])
 
+
     // get all matches and get all matches for every update of the current child
     useEffect(() => {
       axios.get(`http://localhost:8000/api/items/${currentChild.height}/${currentChild.weight}`, {withCredentials: true})
@@ -44,7 +44,7 @@ const ChildProfile = () => {
         .catch(err => console.log(err))
     },[currentChild])
 
-    // convert date format
+    // convert date format long
     const convertDate = data => {
       const parts = data.split('T')
       const date = parts[0].split('-')
@@ -60,6 +60,19 @@ const ChildProfile = () => {
       newDate.push(date[0])
 
       return newDate.join(' ')
+    }
+
+    // convert date format concise
+    const convertDateConcise = data => {
+      console.log(data)
+      const parts = data.split('T')
+      const date = parts[0].split('-')
+
+      const newDate = [date[1], date[2], date[0]]
+
+      console.log(newDate.join("-"))
+
+      return newDate.join("-")
     }
 
     // HANDLE CHANGE IN THE FORM
@@ -82,7 +95,6 @@ const ChildProfile = () => {
       // make API call
       axios.patch(`http://localhost:8000/api/child/${child._id}`, updateInfo, {withCredentials: true})
         .then(res => {
-          console.log(res.data.child)
           setCurrentChild(res.data.child)
         })
         .catch(err => console.log(err))
@@ -103,12 +115,9 @@ const ChildProfile = () => {
     const addToWishList = (e, item) => {
       e.preventDefault()
       const wishlistId = e.target.elements.addToList.value
-      console.log(wishlistId)
-      console.log(item._id)
 
       axios.patch(`http://localhost:8000/api/wishlist/add/${wishlistId}/${item._id}`,{}, {withCredentials: true})
         .then(res => {
-          console.log(res)
           setUser(prevUser => ({
               ...prevUser, 
                   ['wishlists'] : prevUser["wishlists"].map((wishlist) => (
@@ -134,49 +143,43 @@ const ChildProfile = () => {
         )
       }
     }
+
   return (
     <div>
       {/* HEADER */}
-      <div className="head d-flex w-100 h-25 justify-content-between align-items-center  ">
-        <div className="left">
-          <p className='fs-1 m-0'>{currentChild.name} </p>
-          <p className='fs-6'>{convertDate(currentChild.birthDate)}</p>
+      <div className="d-flex w-100 m-0 h-auto justify-content-between align-items-start ">
+        <div className="left p-2 text-center col-7">
+          <p className='fs-2 m-0' style={{color:"#26637b"}}>{currentChild.name} </p>
+          <p className=''><small style={{color:"#84a59d"}}>{convertDate(currentChild.birthDate)}</small></p>
         </div>
 
         {/* STATS */}
-        <div className="stats d-flex align-items-center ">
-          <div className='d-flex'>
-            <form onSubmit={e => updateChild(e)} className='d-flex column-gap-2 '>
-
-              <div>
-                <div className="input_group input-group-sm d-flex column-gap-1 align-items-center  ">
-                  <label htmlFor="height">Height: </label>
-                  <input type="number" name='height' value={updateInput.height} className="form-control input-sm" onChange={e => handleChange(e)} />
+        <div className="stats col-5 rounded rounded-1 ">
+            <form onSubmit={e => updateChild(e)} className='rounded rounded-2 overflow-hidden m-1' style={{backgroundColor: "#e9edc9"}}>
+              <div className='ps-2 pe-2 d-flex justify-content-between '  style={{color: '#26637b', backgroundColor: "#c0d6df"}}>
+                  <p className='fs-6  m-0 text-center'>Stats</p>
+                  <p className='m-0 p-0'><small>Last Updated {convertDateConcise(currentChild.updatedAt)}</small></p>
+              </div>
+              <div className="d-flex">
+                <div className="input-group input-group-sm m-1 w-50">
+                  <label htmlFor="height" className='input-group-text border-0 ' style={{backgroundColor: "#ffffff"}}>Height (in) </label>
+                  <input type="number" name='height' value={updateInput.height} className="form-control text-end border-0 " onChange={e => handleChange(e)} />
                 </div>
-                <div className="input_group input-group-sm d-flex column-gap-1 align-items-center  ">
-                  <label htmlFor="weight">Weight: </label>
-                  <input type="number" name='weight' value={updateInput.weight} className="form-control input-sm" onChange={e => handleChange(e)} />
+                <div className="input-group input-group-sm m-1 w-50">
+                  <label htmlFor="weight" className='input-group-text border-0 ' style={{backgroundColor: "#ffffff"}}>Weight (lbs) </label>
+                  <input type="number" name='weight' value={updateInput.weight} className="form-control input-sm text-end border-0 " onChange={e => handleChange(e)} />
                 </div>
               </div>
-
-              <div className='text-center' >
-                  <button className='btn btn-sm  btn-info m-0'>Update</button>
-                <div>
-                  <p className='m-0'><small>Last Updated:</small></p>
-                  <p><small>{convertDate(currentChild.updatedAt)}</small></p>
-                </div>
-              </div>
-
+              <button className="btn btn-sm w-100 rounded-top-0 " style={{backgroundColor: "#84a59d", color: "#ffffff"}} type="submit">update stats</button>
             </form>
-          </div>
         </div>
       </div>
 
       {/* MATCHES TABLE */}
-      <div className="matches">
-        <p className='fs-4'>Matching Garments</p>
+      <div className="matches p-2 rounded rounded-2 m-1 mb-3" style={{backgroundColor: "#eaeaea"}}>
+        <p className='fs-3 text-center m-0' style={{color:"#26637b"}}>Matching Garments</p>
         {/* Add filterable options here! */}
-        <div className="searchFilters d-flex column-gap-3">
+        <div className="searchFilters d-flex justify-content-center column-gap-3">
           {/* use an onchange to sort matching list */}
           <form>
             <label htmlFor="filter">Filter by:</label>
@@ -194,58 +197,53 @@ const ChildProfile = () => {
             </select>
           </form>
         </div>
-        <table className='table'>
-          <thead>
-            <tr>
-              <th>Brand</th>
-              <th>Type</th>
-              <th>Size</th>
-              <th>Match</th>
-              <th>Add to...</th>
-            </tr>
-          </thead>
-          <tbody>
 
-            {matches.map((item) => (
-              <tr key={item._id}>
-                <td>{item.brand}</td>
-                <td>{item.type}</td>
-                <td>{item.size}</td>
-                <td>{matchType(item)}
-                </td>
-                <td>
-                  <div>
-                    <form onSubmit={(e) => addToWishList(e, item)}>
-                      <button type='submit'>Add to...</button>
-                      <select name="addToList" id="addToList" >
-                        {user.wishlists.map((wishlist) => (
-                          <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
-                        ))}
-                      </select>
-                    </form>
-                  </div>
-                </td>
-              </tr>
-            ))}
-
-          </tbody>
-        </table>
+        {/* Match display */}
+        <div className="myTable d-flex justify-content-between overflow-scroll w-100 rounded rounded-2">
+          <div className='p-1 text-start ' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
+            <p className='mb-1'>Brand</p>
+            <p className='mb-1'>Type</p>
+            <p className='mb-1'>Size</p>
+            <p className='mb-1'>Match</p>
+            <p className='mb-1'>Add To...</p>
+          </div>
+          {matches.map((item) => (
+            <div className='text-center ms-1 bg-white rounded rounded-1'>
+              <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
+              <p className='mb-1'>{item.type}</p>
+              <p className='mb-1'>{item.size}</p>
+              <p className='mb-1'>{matchType(item)}</p>
+              <div className='mb-1'>
+                <form onSubmit={(e) => addToWishList(e, item)}>
+                  <select name="addToList" id="addToList" >
+                    {user.wishlists.map((wishlist) => (
+                      <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                      ))}
+                  </select>
+                  <button type='submit'>Add to...</button>
+                </form>
+              </div>
+          </div>
+          ))}
+        </div>
       </div>
       
       {/* Growth Chart */}
-      <div className='h-100'>
-        <ResponsiveContainer width={500} height={200}>
+      <div className=''>
+        <ResponsiveContainer width="90%" height="10%">
           <LineChart data={[...currentChild.history, {height: currentChild.height, weight: currentChild.weight, dateAdded: currentChild.updatedAt}]}>
                 <XAxis dataKey={"Time"} />
                 {/* Make domain dynamic with largest value in list */}
-                <YAxis dataKey={"Data"} domain={[0, 50]} type='number'/> 
-                <CartesianGrid stroke='grey' strokeDasharray='5 5'/>
+                <YAxis dataKey={"Data"} domain={[0, (Math.floor(currentChild.weight + 10))]} tickCount={4} type='number'/> 
+                <CartesianGrid stroke='grey' strokeDasharray='3'/>
                 <Line dataKey={'height'} stroke='purple' strokeWidth={3} isAnimationActive={false}/>
                 <Line dataKey={'weight'} stroke='pink' strokeWidth={3} isAnimationActive={false}/>
                 <Legend />
                 <Tooltip content={ToolTipContent}/>
+
           </LineChart>
         </ResponsiveContainer>
+
       </div>
     </div>
   )

@@ -4,29 +4,25 @@ import {Link} from 'react-router-dom'
 
 const WishListWidget = () => {
     const {user} = useContext(UserContext)
-    console.log(user)
+
   return (
-    <div className='text-center'>
-        <p>My WishLists</p>
-        <table className='table'>
-        <thead>
-            <tr>
-            <th>Title</th>
-            <th>Child</th>
-            <th># Items</th>
-            </tr>
-        </thead>
-        <tbody>
+    <div className='text-center rounded rounded-2 m-1 w-100 overflow-auto shadow-lg ' style={{maxHeight: "98%", backgroundColor: "#e9edc9"}}>
+        <div className='mb-1 sticky-top'>
+            <p className='fs-5 text-end m-0 ps-2 pe-2' style={{color: '#ffffff', backgroundColor: "#26637b"}}>My Wishlists</p>
+        </div>
+        <div className='rounded rounded-3 m-0 pe-2 ps-2'>
           {user.wishlists && user.wishlists.map((wishlist) => (
-              <tr key={wishlist._id}>
-              <td>{wishlist.title}</td>
-              <td>{wishlist.child === null ? "none" : wishlist.child.name}</td>
-              <td>{wishlist.items.length}</td>
-              </tr>
+            <div key={wishlist['_id']} className='m-0'>
+              <div className='d-flex justify-content-between p-1 mb-1 rounded rounded-1 bg-white'>
+                <p className='col-8 fs-6 text-start m-0 ' style={{color: '#84a59d'}}>{wishlist.title}</p>
+                <p className='col-4 fs-6 text-end m-0' style={{color: '#84a59d'}}>{wishlist.items.length}</p>
+              </div>
+            </div>
           ))}
-        </tbody>
-        </table>
-        <Link to={'/user/wishlist'} className='btn btn-secondary '>View / Create Wishlists</Link>
+        </div>
+
+          <Link to={'/user/wishlist'} className='btn btn-sm w-100 rounded-top-0 sticky-bottom' style={{backgroundColor: "#84a59d", color: "#ffffff"}}>View & Create Wishlists</Link>
+
   </div>
   )
 }
