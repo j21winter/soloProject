@@ -78,7 +78,7 @@ const UserDashboard = (props) => {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="rightColumn col-2 d-flex flex-column justify-content-start ">
+          <div className="rightColumn col-2 d-flex flex-column justify-content-start pe-2">
 
             {/* My Wishlist */}
             <div className="widget d-flex align-items-start h-auto" style={{"maxHeight":"100%"}}>
