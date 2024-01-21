@@ -70,9 +70,9 @@ const ChildProfile = () => {
 
       const newDate = [date[1], date[2], date[0]]
 
-      console.log(newDate.join("-"))
 
-      return newDate.join("-")
+
+      return newDate.join("/")
     }
 
     // HANDLE CHANGE IN THE FORM
@@ -138,7 +138,7 @@ const ChildProfile = () => {
           <div className='rounded rounded-2 bg-body-secondary text-center'>
             <div>Height: {data.height}</div>
             <div>Weight: {data.weight}</div>
-            <div>Day : {convertDate(data.dateAdded)}</div>
+            <div>Day : {convertDateConcise(data.dateAdded)}</div>
           </div>
         )
       }
@@ -204,23 +204,24 @@ const ChildProfile = () => {
             <p className='mb-1'>Brand</p>
             <p className='mb-1'>Type</p>
             <p className='mb-1'>Size</p>
-            <p className='mb-1'>Match</p>
+            <p className='mb-3'>Match</p>
             <p className='mb-1'>Add To...</p>
           </div>
           {matches.map((item) => (
-            <div className='text-center ms-1 bg-white rounded rounded-1'>
+            <div className='text-center ms-1 m-0 p-0 bg-white rounded rounded-2'>
               <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
               <p className='mb-1'>{item.type}</p>
               <p className='mb-1'>{item.size}</p>
               <p className='mb-1'>{matchType(item)}</p>
-              <div className='mb-1'>
-                <form onSubmit={(e) => addToWishList(e, item)}>
-                  <select name="addToList" id="addToList" >
+              <div className=''>
+                <form onSubmit={(e) => addToWishList(e, item)} className='m-0'>
+                  <select name="addToList" id="addToList" className="border-0"style={{width: "90%"}}>
                     {user.wishlists.map((wishlist) => (
                       <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
                       ))}
                   </select>
-                  <button type='submit'>Add to...</button>
+                  <button type='submit' className='w-100 btn m-0 btn-sm rounded-top-0 ' style={{backgroundColor: "#f7e1d7"}}>Add</button>
+
                 </form>
               </div>
           </div>
@@ -229,8 +230,7 @@ const ChildProfile = () => {
       </div>
       
       {/* Growth Chart */}
-      <div className=''>
-        <ResponsiveContainer width="90%" height="10%">
+      <ResponsiveContainer width="90%" height={300}>
           <LineChart data={[...currentChild.history, {height: currentChild.height, weight: currentChild.weight, dateAdded: currentChild.updatedAt}]}>
                 <XAxis dataKey={"Time"} />
                 {/* Make domain dynamic with largest value in list */}
@@ -244,7 +244,7 @@ const ChildProfile = () => {
           </LineChart>
         </ResponsiveContainer>
 
-      </div>
+
     </div>
   )
 }

@@ -72,7 +72,7 @@ const UserDashboard = (props) => {
           </div>
 
           {/* CENTER COLUMN */}
-          <div className="mainStage col-8 m-1 rounded rounded-2 shadow-lg overflow-auto" style={{backgroundColor: "#ffffff"}}>
+          <div className="mainStage col-8 m-1 rounded rounded-2 shadow-lg overflow-hidden" style={{backgroundColor: "#ffffff"}}>
             {/* conditionally render components */}
             {activeComponent}
           </div>

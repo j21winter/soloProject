@@ -1,23 +1,29 @@
 login
     Styling
+
 ChildProfile
-    Styling and structure(header/result table/graph)
-
-    Allow for adding items to wishlists
-
     Sorting and filtering table
+
 Landing Page Active component
     consider what will go here when you login
+
 Quick Search
     OnSubmit => quick search Active Component opens in the middle with the search results
 
+Wishlist widget
+    quick links to open the wishlist in the active component as the displayWishlist
+
 WistList
-FORM ONSUBMIT!!!!!!
+    STYLING
     naming convention for personal wishlists for each child as part of the create child controller function
-    Create wishlists
-    Allow for adding and removing items
-    
-    allow for wishlist item button functions, consider add to... as a drop down of things you could add it to, other wishlists or registries available
+    deleting wishlists
+
+ACCOUNT Page
+    EDIT NAME
+    EDIT CHILDREN NAMES
+    EDIT EMAIL 
+    EDIT PASSWORD
+
 APP
     Save user to local Storage
 
