@@ -11,6 +11,7 @@ import UserAccount from './components/activeComponents/user/UserAccount'
 import UserRegistry from './components/activeComponents/user/UserRegistry'
 import UserWishlist from './components/activeComponents/user/UserWishlist'
 
+import QuickSearch from './components/QuickSearch'
 import ChildProfile from './components/activeComponents/child/ChildProfile'
 
 function App() {
@@ -21,6 +22,8 @@ function App() {
 
 const [user, setUser] = useState({})
 const [child, setChild] = useState({})
+const [quickSearchInput, setQuickSearchInput] = useState({height: "", weight: ""})
+const [displayWishlist, setDisplayWishList] = useState({})
 
 const saveLoggedInUser = userData => {
   console.log("saving", userData)
@@ -30,11 +33,12 @@ const saveLoggedInUser = userData => {
 
   return (
     <>
-      <UserContext.Provider value={{user, setUser, child, setChild, saveLoggedInUser}}>
+      <UserContext.Provider value={{user, setUser, child, setChild, saveLoggedInUser, quickSearchInput, setQuickSearchInput, displayWishlist, setDisplayWishList}}>
           <Routes>
               <Route path='/' element={<Navigate to="/login"/>} />  
               <Route path='/login' element={<LoginAndReg />} />
-              <Route path='/user' element={<UserDashboard activeComponent={<UserProfile />} />} />
+              <Route path='/user' element={<UserDashboard activeComponent={<QuickSearch />} />} />
+              <Route path='/user/account' element={<UserDashboard activeComponent={<UserProfile />} />} />
               <Route path='/user/child/:id' element={<UserDashboard activeComponent={<ChildProfile />} />} />
               <Route path='/user/account' element={<UserDashboard activeComponent={<UserAccount />} />} />
               <Route path='/user/registries' element={<UserDashboard activeComponent={<UserRegistry />} />} />

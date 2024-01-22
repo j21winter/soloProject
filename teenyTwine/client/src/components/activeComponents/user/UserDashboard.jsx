@@ -10,7 +10,7 @@ import WishListWidget from '../../widgets/WishListWidget'
 import UserContext from '../../../context/userContext'
 
 const UserDashboard = (props) => {
-  const { user } = useContext(UserContext)
+  const { user, setQuickSearchInput } = useContext(UserContext)
   const {activeComponent} = props
   const navigate = useNavigate()
 
@@ -23,6 +23,12 @@ const UserDashboard = (props) => {
       console.log(`user ${user._id} logged in`)
     }
   },[])
+
+  const initQuickSearch = (e) => {
+    e.preventDefault()
+    navigate('/user')
+  }
+
 
   return (
     <>
@@ -47,28 +53,6 @@ const UserDashboard = (props) => {
 
               
             </div>
-
-            {/* Quick Search */}
-            <div className="widget overflow-scroll rounded rounded-1 p-2 h-auto" style={{backgroundColor: "#e9edc9"}}>
-              <form action="">
-                <div className='d-flex justify-content-between mb-1 align-items-center  '>
-                  <p className='fs-4 m-0'  style={{color: "#84a59d"}}>Quick Search</p>
-                  <button className="btn btn-sm me-1" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>search</button>
-                </div>
-
-                <div className="input-group input-group-sm border-0 mb-1">
-                  <label htmlFor="height" className="input-group-text border-0">Height (in):</label>
-                  <input type="number" min={0} step="0.1" name="height"className="form-control border-0 text-end" />
-                </div>
-
-                <div className="input-group input-group-sm">
-                  <label htmlFor="weight" className="input-group-text border-0">Weight (lbs):</label>
-                  <input type="number" min={0} step="0.1" name="weight"className="form-control border-0 text-end" />
-                </div>
-                
-                
-              </form>
-            </div>
           </div>
 
           {/* CENTER COLUMN */}
@@ -81,20 +65,32 @@ const UserDashboard = (props) => {
           <div className="rightColumn col-2 d-flex flex-column justify-content-start pe-2">
 
             {/* My Wishlist */}
-            <div className="widget d-flex align-items-start h-auto" style={{"maxHeight":"100%"}}>
+            <div className="widget d-flex align-items-start h-auto" style={{"maxHeight":"50%"}}>
               <WishListWidget />
             </div>
 
-            {/* Registries */}
-            {/* <div className="widget border border-3 border-black">
-              <h3>Registries</h3>
-              <ul>
-                {user.registries.map((registry, index) => (
-                  <Link >{registry.title}</Link>
-                ))}
-              </ul>
-              <button className='btn btn-secondary' >Create Registry</button>
-            </div> */}
+            {/* Quick Search */}
+            <div className="widget overflow-scroll rounded rounded-1 h-auto mt-2" style={{backgroundColor: "#e9edc9"}}>
+              <form action="">
+              <div className='d-flex justify-content-between align-items-center ps-2 pe-2 mb-1'  style={{color: '#ffffff', backgroundColor: "#26637b"}}>
+                <p className='fs-5 ms-1 m-0'>Quick Search</p>
+              </div>
+
+                <div className="input-group input-group-sm border-0 mb-1">
+                  <label htmlFor="height" className="input-group-text border-0 bg-white">Height (in):</label>
+                  <input type="number" min={0} step="0.1" name="height"className="form-control border-0 text-end" onChange={(e) => setQuickSearchInput( prev => ({...prev, [e.target.name]: e.target.value}))}/>
+                </div>
+
+                <div className="input-group input-group-sm mb-1">
+                  <label htmlFor="weight" className="input-group-text border-0 bg-white">Weight (lbs):</label>
+                  <input type="number" min={0} step="0.1" name="weight"className="form-control border-0 text-end" onChange={(e) => setQuickSearchInput( prev => ({...prev, [e.target.name]: e.target.value}))} />
+                </div>
+                
+                <button className="btn btn-sm w-100 rounded-top-0 " style={{backgroundColor: "#84a59d", color: "#ffffff"}} onClick={(e) => initQuickSearch(e)}>search</button>
+                
+              </form>
+            </div>
+
           </div>
 
         </div>

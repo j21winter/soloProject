@@ -55,16 +55,26 @@ async function setUp(sizeGuide){
 
         if(existingData.length === 0) {
             await Item.create(sizeGuide)
-            console.log("Size Guides Uploaded Successfully")
+            console.log(`${dataBrand}  Uploaded Successfully`)
         } else {
-            console.log("SizeGuides already in place")
+            console.log(`${dataBrand} already in place`)
         }
 
         await mongoose.connection.close()
+
     }catch (err){
         console.error("Error during Setup: ", err)
     }
 }
 
-setUp(gerber)
-setUp(carters)
+async function callSetUp(){
+    try{
+        await setUp(gerber)
+        await setUp(carters)
+    } catch (err) {
+        console.log(err)
+    }
+}
+
+
+callSetUp()

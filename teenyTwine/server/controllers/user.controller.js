@@ -68,22 +68,50 @@ const findOne = (req, res) => {
         .catch(err => res.status(400).json(err))
 }
 
+const isEmailUnique = async (email, userId)=> {
+    const query = {email, _id : { $ne : userId }};
+    let foundUser = await User.findOne(query);
+    return !foundUser ;
+}
+
 // UPDATE
-const updateUser = (req, res) => {
-    //! RESEARCH HOW TO VALIDATE EMAIIL AND PASSWORD BEOFRE UPDATE
-    console.log("UPDATING USER: " + req.params.id)
-    User.findOneAndUpdate({_id: req.params.id}, req.body,  {new: true, runValidators: true})
-        .then(updatedUser => {
+const updateUser =  async (req, res) => {
+    console.log("update received")
+    console.log(req.body)
+    const {email, firstName, lastName} = req.body
+    const userId = req.params.id
+
+    try {
+        // Find the user by ID
+        const user = await User.findOne({_id : userId});
+        console.log(user)
+
+        if (email === user.email) {
+            console.log("email is the same")
+            const updatedUser = await User.findOneAndUpdate({_id: userId}, {firstName, lastName},  {new: true, runValidators: true})
             res.status(200).json(updatedUser)
-        })
-        .catch(err => res.status(400).json(err))
+        } else {
+            console.log("email is different")
+
+            const isUnique = await isEmailUnique(email, userId);
+        
+            if (isUnique) {
+                const updatedUser = await User.findOneAndUpdate({_id: userId}, {firstName, lastName, email},  {new: true, runValidators: true})
+                res.status(200).json(updatedUser)
+            } else {
+                res.status(400).json({errors:{email:{ message: "Email already in use!" }}})
+            }
+        }
+    } catch (err) {
+        res.status(400).json(err)
+    }
 }
 
 // DELETE 
 const deleteUser = async (req, res) => {
     try{
         // Delete Children of the list first
-        await Child.deleteMany({parent : req.params.id})
+        const deletedChildren = await Child.deleteMany({parent : req.params.id})
         // Then delete the user
         const deletedUser = await User.findByIdAndDelete(req.params.id)
 

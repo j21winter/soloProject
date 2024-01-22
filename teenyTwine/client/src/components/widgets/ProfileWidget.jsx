@@ -4,10 +4,14 @@ import {Link} from 'react-router-dom'
 import axios from 'axios'
 
 const ProfileWidget = () => {
-    const { user, setUser, setChild } = useContext(UserContext)
+    const { user, setUser, setChild, displayWishlist, setDisplayWishList } = useContext(UserContext)
 
     const deleteChild = (e, child) => {
         e.preventDefault()
+        console.log(child._id)
+        if(displayWishlist.child && child._id == displayWishlist.child._id){
+            setDisplayWishList({})
+        }
         axios.delete(`http://localhost:8000/api/child/${child._id}/${user._id}`,{data: {child: child}, withCredentials: true})
             .then(res => {
                 console.log(res)

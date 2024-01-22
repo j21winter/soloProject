@@ -148,7 +148,7 @@ const ChildProfile = () => {
     <div>
       {/* HEADER */}
       <div className="d-flex w-100 m-0 h-auto justify-content-between align-items-start ">
-        <div className="left p-2 text-center col-7">
+        <div className="left p-2 text-center col-7 m-0">
           <p className='fs-2 m-0' style={{color:"#26637b"}}>{currentChild.name} </p>
           <p className=''><small style={{color:"#84a59d"}}>{convertDate(currentChild.birthDate)}</small></p>
         </div>
@@ -200,7 +200,7 @@ const ChildProfile = () => {
 
         {/* Match display */}
         <div className="myTable d-flex justify-content-between overflow-scroll w-100 rounded rounded-2">
-          <div className='p-1 text-start ' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
+          <div className='p-1 text-start col-2' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
             <p className='mb-1'>Brand</p>
             <p className='mb-1'>Type</p>
             <p className='mb-1'>Size</p>
@@ -208,7 +208,7 @@ const ChildProfile = () => {
             <p className='mb-1'>Add To...</p>
           </div>
           {matches.map((item) => (
-            <div className='text-center ms-1 m-0 p-0 bg-white rounded rounded-2'>
+            <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
               <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
               <p className='mb-1'>{item.type}</p>
               <p className='mb-1'>{item.size}</p>
@@ -230,20 +230,22 @@ const ChildProfile = () => {
       </div>
       
       {/* Growth Chart */}
-      <ResponsiveContainer width="90%" height={300}>
-          <LineChart data={[...currentChild.history, {height: currentChild.height, weight: currentChild.weight, dateAdded: currentChild.updatedAt}]}>
-                <XAxis dataKey={"Time"} />
-                {/* Make domain dynamic with largest value in list */}
-                <YAxis dataKey={"Data"} domain={[0, (Math.floor(currentChild.weight + 10))]} tickCount={4} type='number'/> 
-                <CartesianGrid stroke='grey' strokeDasharray='3'/>
-                <Line dataKey={'height'} stroke='purple' strokeWidth={3} isAnimationActive={false}/>
-                <Line dataKey={'weight'} stroke='pink' strokeWidth={3} isAnimationActive={false}/>
-                <Legend />
-                <Tooltip content={ToolTipContent}/>
 
+      <div className='h-auto'>
+      <p className='fs-3 text-center m-0' style={{color:"#26637b"}}>Growth Chart</p>
+        <ResponsiveContainer width="90%" height={200}>
+          <LineChart data={[...currentChild.history, {height: currentChild.height, weight: currentChild.weight, dateAdded: currentChild.updatedAt}]}>
+            <XAxis dataKey={"Time"} />
+            {/* Make domain dynamic with largest value in list */}
+            <YAxis dataKey={"Data"} domain={[0, (Math.floor(currentChild.weight + 10))]} tickCount={4} type='number'/> 
+            <CartesianGrid stroke='grey' strokeDasharray='3'/>
+            <Line dataKey={'height'} stroke='purple' strokeWidth={3} isAnimationActive={false}/>
+            <Line dataKey={'weight'} stroke='pink' strokeWidth={3} isAnimationActive={false}/>
+            <Legend />
+            <Tooltip content={ToolTipContent}/>
           </LineChart>
         </ResponsiveContainer>
-
+      </div>
 
     </div>
   )

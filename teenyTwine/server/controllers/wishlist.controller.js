@@ -9,6 +9,11 @@ const createList = async (req, res) => {
         // create the new wishlist
         const newWishlist = await Wishlist.create(req.body)
 
+        if (newWishlist.child) {
+            console.log("populating child")
+            // Populate the child attribute only if it's not null
+            await newWishlist.populate("child");
+        }
         // attach it to the user
         const updatedParent = await User.findOneAndUpdate(
             {_id : parent},
@@ -17,9 +22,9 @@ const createList = async (req, res) => {
             },
             {new: true, runValidators: true}
         )
-
         res.status(200).json({newWishlist: newWishlist, updatedUser: updatedParent})
     } catch (err) {
+        console.log(err)
         res.status(400).json(err)
     }
 }

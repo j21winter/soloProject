@@ -3,6 +3,7 @@ login
 
 ChildProfile
     Sorting and filtering table
+    if the child is deleted then repopulate the child or more to the homepage
 
 Landing Page Active component
     consider what will go here when you login
@@ -12,6 +13,7 @@ Quick Search
 
 Wishlist widget
     quick links to open the wishlist in the active component as the displayWishlist
+    if no wishlists then disable or remove button
 
 WistList
     STYLING

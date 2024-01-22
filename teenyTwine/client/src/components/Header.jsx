@@ -1,6 +1,6 @@
 import React, {useContext} from 'react'
 import UserContext from '../context/userContext'
-import { useNavigate } from 'react-router-dom'
+import { useNavigate, Link } from 'react-router-dom'
 import axios from 'axios'
 
 const Header = () => {
@@ -26,7 +26,7 @@ const Header = () => {
             </div>
             {user._id && (
                 <div className='d-flex column-gap-1 '>
-                    <button className="account btn btn-sm bg-white" style={{ color: "#84a59d"}}>Account</button>
+                    <Link to="/user/account" className="account btn btn-sm bg-white" style={{ color: "#84a59d"}}>Account</Link>
                     <button className="logout btn btn-sm bg-white" style={{ color: "#84a59d"}} onClick={handleLogout}>Logout</button>
                 </div>
         )}
