@@ -1,32 +1,15 @@
-login
-    Styling
 
-ChildProfile
-    Sorting and filtering table
-    if the child is deleted then repopulate the child or more to the homepage
-
-Landing Page Active component
-    consider what will go here when you login
-
-Quick Search
-    OnSubmit => quick search Active Component opens in the middle with the search results
-
-Wishlist widget
-    quick links to open the wishlist in the active component as the displayWishlist
-    if no wishlists then disable or remove button
-
-WistList
-    STYLING
-    naming convention for personal wishlists for each child as part of the create child controller function
-    deleting wishlists
+Wishlist    
+    cannot add duplicate items.
 
 ACCOUNT Page
-    EDIT NAME
-    EDIT CHILDREN NAMES
-    EDIT EMAIL 
+    EDIT children names
     EDIT PASSWORD
+    EDIT wishlists
 
-APP
-    Save user to local Storage
+auth
+    protected routes
 
+registries
+    Create page and functionality for sharable and public routes.
 
