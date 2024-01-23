@@ -9,6 +9,7 @@ const Header = () => {
 
     const handleLogout = (e) => {
         e.preventDefault()
+        localStorage.removeItem("user")
         axios.post('http://localhost:8000/api/logout',{},{withCredentials: true})
             .then(res => {
                 setUser({})

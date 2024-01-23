@@ -15,6 +15,7 @@ const UserWishlist = () => {
   })
 
 
+
   // combine and organize wishlists to children groups for display
   useEffect(() => {
     const obj = {other: []}
@@ -80,6 +81,8 @@ const UserWishlist = () => {
 
       document.getElementById('child').selectedIndex = 0
   }
+
+
 
   // calculate matchtype in form
   const matchType = (item, wishlist) => {
@@ -234,7 +237,7 @@ const UserWishlist = () => {
       
       {/* display wishlist table */}
       <div className='d-flex flex-column  col-12 ms-3 mt-3'>
-        {displayWishlist.title ? <p className='fs-3 text-center' style={{color: "#26637b"}}>{displayWishlist.title } Wishlist Items</p> : <p className='fs-3 text-center' style={{color: "#26637b"}}>Please Select a wishlist to view items</p>}
+        {displayWishlist.title ? <p className='fs-3 text-center' style={{color: "#26637b"}}>{displayWishlist.title }</p> : <p className='fs-3 text-center' style={{color: "#26637b"}}>Please Select a wishlist to view items</p>}
       <div className="myTable d-flex justify-content-start overflow-scroll w-100 rounded rounded-2">
           <div className='p-1 text-start ' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
             <p className='mb-1'>Brand</p>

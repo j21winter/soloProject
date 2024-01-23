@@ -8,7 +8,7 @@ const UserProfile = () => {
   const {user, setUser} = useContext(UserContext)
   const [userFormInput, setUserFormInput] = useState({
     firstName: user.firstName,
-    lastName: user.firstName,
+    lastName: user.lastName,
     email: user.email
   })
   const [formErrors, setFormErrors] = useState({})
@@ -53,12 +53,13 @@ const UserProfile = () => {
 
   const deleteAccount = e => {
     e.preventDefault()
-
-    axios.delete(`http://localhost:8000/api/user/${user._id}`, {withCredentials: true})
-      .then(res => {
-        console.log(res)
-        handleLogout(e)
-      })
+    if(confirm("You are requesting to delete your account. \nYou will loose all data associated with this account. \nHit 'OK' to proceed? Otherwise 'CANCEL'.")){
+      axios.delete(`http://localhost:8000/api/user/${user._id}`, {withCredentials: true})
+        .then(res => {
+          console.log(res)
+          handleLogout(e)
+        })
+    }
     
   }
 
@@ -75,15 +76,18 @@ const UserProfile = () => {
             <div className='d-flex justify-content-between align-items-center ps-2 pe-2 mb-1'  style={{color: '#ffffff', backgroundColor: "#26637b"}}>
                 <p className='fs-5 ms-1 m-0'>User</p>
             </div>
+
             <div className="input-group input-group-sm border-0 mb-1">
                 <label htmlFor="firstName" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>First name:</label>
                 <input type="text" name='firstName' className="form-control border-0 text-end" value={userFormInput.firstName} onChange={e => handleUserFormChange(e)}/>
             </div>
             {formErrors.firstName ? <p className="text-danger text-center"><small>{formErrors.firstName.message}</small></p> : ""}
+
             <div className="input-group input-group-sm border-0 mb-1">
                 <label htmlFor="lastName" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Last name:</label>
                 <input type="text" name='lastName' className="form-control border-0 text-end" value={userFormInput.lastName} onChange={e => handleUserFormChange(e)}/>
             </div>
+
             { formErrors.lastName ? <p className="text-danger text-center"><small>{formErrors.lastName.message}</small></p> : ""}
 
             <div className="input-group input-group-sm border-0 mb-1">

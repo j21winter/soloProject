@@ -3,21 +3,39 @@ import UserContext from '../context/userContext'
 import axios from 'axios'
 
 const QuickSearch = () => {
-    const {user, quickSearchInput, setQuickSearchInput} = useContext(UserContext)
+    const {user,setUser, quickSearchInput, setQuickSearchInput} = useContext(UserContext)
     const [formInput, setFormInput] = useState({height: quickSearchInput.height, weight: quickSearchInput.weight})
     const [matches, setMatches] = useState([])
+    const [filterData, setFilterData] = useState({})
+    const [filterSelection, setFilterSelection] = useState("")
 
     // get the search
     useEffect(() => {
-        console.log()
         if(quickSearchInput.height != "" && quickSearchInput.weight != ""){
             axios.get(`http://localhost:8000/api/items/${quickSearchInput.height}/${quickSearchInput.weight}`, {withCredentials: true})
                 .then(res => {
                 setMatches(res.data)
+                getFilterData(res.data)
                 })
                 .catch(err => console.log(err))
         }
-      },[quickSearchInput])
+    },[quickSearchInput])
+
+    // get filter data
+    const getFilterData = data => {
+
+        setFilterData({})
+        const filterList = {brands : [], sizes: []}
+        data.forEach(item => {
+            if(!filterList.hasOwnProperty(item.brand)){
+                filterList.brands[item.brand] = item.brand
+            }
+            if(!filterList.hasOwnProperty(item.size)){
+                filterList.sizes[item.size] = item.size
+            }
+        })
+        setFilterData(filterList)
+    }
 
     // HANDLE CHANGE IN THE FORM
     const handleChange = e => {
@@ -45,9 +63,9 @@ const QuickSearch = () => {
         let {height, weight} = quickSearchInput
         let {minHeight, maxHeight, minWeight, maxWeight} = item
         if(height >= minHeight && height <= maxHeight && weight >= minWeight && weight <= maxWeight){
-            return (<p>100%</p>)
+            return "100%"
         } else {
-            return (<p>50%</p>)
+            return "50%"
         }
     }
 
@@ -104,25 +122,26 @@ const QuickSearch = () => {
             {/* Add filterable options here! */}
             <div className="searchFilters d-flex justify-content-center column-gap-3">
             {/* use an onchange to sort matching list */}
-            <form>
-                <label htmlFor="filter">Filter by:</label>
-                <select name="filter" id="">
-                {/* POPULATE WITH OPTIONS FROM THE LIST */}
-                <option value="" disabled >Filter</option>
-                </select>
-            </form>
-            {/* use an onchange to sort matching list */}
-            <form>
-            <label htmlFor="sort">Sort by:</label>
-                <select name="sort" id="">
-                {/* POPULATE WITH OPTIONS FROM THE LIST */}
-                <option value="" disabled >Sort</option>
-                </select>
-            </form>
+                <form>
+                    <label htmlFor="filter">Filter by:</label>
+                    <select name="filter" id="filter" onChange={(e) => setFilterSelection(e.target.value)}>
+                    {/* POPULATE WITH OPTIONS FROM THE LIST */}
+                    <option value="" disabled selected>Filter</option>
+                    <option value={""}>All</option>
+                    <option value="" className='text-center'disabled>-- Brands --</option>
+                    {filterData.brands ? (Object.keys(filterData.brands).map((brandName) => (
+                        <option key={brandName} value={brandName}> {brandName} </option>
+                    ))) : ("")}
+                    <option value="" disabled>-- Sizes --</option>
+                    {filterData.sizes ? (Object.keys(filterData.sizes).map((sizeName) => (
+                        <option key={sizeName} value={sizeName}> {sizeName} </option>
+                    ))) : ("")}
+                    </select>
+                </form>
             </div>
 
             {/* Match display */}
-            <div className="myTable d-flex justify-content-between overflow-scroll w-100 rounded rounded-2">
+            <div className="myTable d-flex justify-content-start overflow-scroll w-100 rounded rounded-2">
             <div className='p-1 text-start col-2' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
                 <p className='mb-1'>Brand</p>
                 <p className='mb-1'>Type</p>
@@ -130,7 +149,43 @@ const QuickSearch = () => {
                 <p className='mb-3'>Match</p>
                 <p className='mb-1'>Add To...</p>
             </div>
-            {matches.map((item) => (
+            {filterSelection ? (matches.filter((item) => item["brand"] === filterSelection || item["size"] == filterSelection).map((item) => (
+            <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
+                <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
+                <p className='mb-1'>{item.type}</p>
+                <p className='mb-1'>{item.size}</p>
+                <p className='mb-1'>{matchType(item)}</p>
+                <div>
+                    <form onSubmit={(e) => addToWishList(e, item)} className='m-0'>
+                        <select name="addToList" id="addToList" className="border-0"style={{width: "90%"}}>
+                            {user.wishlists.map((wishlist) => (
+                                <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                            ))}
+                        </select>
+                        <button type='submit' className='w-100 btn m-0 btn-sm rounded-top-0 ' style={{backgroundColor: "#f7e1d7"}}>Add</button>
+                    </form>
+                </div>
+            </div> 
+            ))) : ((matches.map((item) => (
+            <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
+                <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
+                <p className='mb-1'>{item.type}</p>
+                <p className='mb-1'>{item.size}</p>
+                <p className='mb-1'>{matchType(item)}</p>
+                <div className=''>
+                    <form onSubmit={(e) => addToWishList(e, item)} className='m-0'>
+                        <select name="addToList" id="addToList" className="border-0"style={{width: "90%"}}>
+                            {user.wishlists.map((wishlist) => (
+                                <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                            ))}
+                        </select>
+                        <button type='submit' className='w-100 btn m-0 btn-sm rounded-top-0 ' style={{backgroundColor: "#f7e1d7"}}>Add</button>
+
+                    </form>
+                </div>
+            </div> 
+            ))))}
+            {/* {matches.map((item) => (
                 <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
                     <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
                     <p className='mb-1'>{item.type}</p>
@@ -147,7 +202,7 @@ const QuickSearch = () => {
                     </form>
                 </div>
             </div>
-            ))}
+            ))} */}
             </div>
         </div>
     </div>

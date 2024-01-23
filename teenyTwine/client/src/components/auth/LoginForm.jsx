@@ -43,13 +43,11 @@ const LoginForm = (props) => {
         // API Call
         axios.post('http://localhost:8000/api/login', loginInput, {withCredentials: true})
             .then(res => {
-                console.log(res)
                 saveLoggedInUser(res.data.user)
                 // redirect to homepage
                 navigate('/user')
             })
             .catch(err => {
-                console.log(err)
                 // Add errors for display
                 setErrors( prevErrors =>({
                     ...prevErrors, 
@@ -89,26 +87,30 @@ const LoginForm = (props) => {
 
   return (
     <>
-        <div id='login' className='card p-3'>
-            <h2>Login</h2>
+        <div id='login' className='card p-0 m-2 w-100 rounded rounded 2 overflow-hidden h-auto' style={{ backgroundColor: "#26637b"}}>
+
 
             {/* LOGIN FORM */}
             <form onSubmit={(e) => handleLoginSubmit(e)}>
 
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-input">Email:</label>
-                    <input type="text" name='email' className='form-control' value={loginInput.email} onChange={(e) => handleLoginInputChange(e)} />
+            <div className='d-flex align-items-center text-center ps-2 pe-2 mb-3'  style={{color: '#26637b', backgroundColor: "rgb(192, 214, 223)"}}>
+                    <p className='fs-5 mx-auto m-0 text-center '>Login</p>
+                </div>
+
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="email" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Email </label>
+                    <input type="email" name='email' className="form-control border-0 text-end" value={loginInput.email} onChange={(e) => handleLoginInputChange(e)}/>
                 </div>
                 {errors.login.email ? <p className='text-warning'>{errors.login.email}</p> : ""}
 
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-input">Password:</label>
-                    <input type="password" name='password' className='form-control' value={loginInput.password} onChange={(e) => handleLoginInputChange(e)} />
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="password" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Password </label>
+                    <input type="password" name='password' className="form-control border-0 text-end" value={loginInput.password} onChange={(e) => handleLoginInputChange(e)}/>
                 </div>
                 {errors.login.password ? <p className='text-warning'>{errors.login.password}</p> : ""}
-
                 {errors.login.error ? <p className='text-warning'>{errors.login.error}</p> : ""}
-                <button type="submit">Login</button>
+                
+                <button className="btn btn-sm w-100 rounded-top-0 " type="submit" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>Login</button>
 
             </form>
         </div>

@@ -41,18 +41,15 @@ const RegForm = (props) => {
                     confirmPassword: ""
             }
         }))
-        //! VALIDATE?
     
         // make API call to register
         axios.post('http://localhost:8000/api/register', regInput, {withCredentials: true})
             .then(res => {
-                console.log(res)
                 saveLoggedInUser(res.data.user)
                 // redirect to homepage
                 navigate('/user') 
             })
             .catch(err => {
-                console.log(err.response.data)
                 setErrors( prevErrors => {
                     const formErrors = err.response.data.errors
                     const updatedErrors = {...prevErrors}
@@ -67,42 +64,44 @@ const RegForm = (props) => {
 
   return (
     <>{/* REGISTRATION FORM */}
-        <div id='registration' className='card p-3'>
-            <h2>Registration</h2>
+        <div id='registration' className='card p-0 m-2 w-100 rounded rounded 2 overflow-hidden' style={{ backgroundColor: "rgb(192, 214, 223)"}}>
 
-            <form onSubmit={(e) => handleRegSubmit(e)} >
+            <form onSubmit={(e) => handleRegSubmit(e)} className=''>
+                <div className='d-flex align-items-center text-center ps-2 pe-2 mb-3'  style={{color: '#ffffff', backgroundColor: "#26637b"}}>
+                    <p className='fs-5 mx-auto m-0 text-center '>Registration</p>
+                </div>
 
-                <div className="mb-3">
-                    <label htmlFor="firstName" className="form-input">First name:</label>
-                    <input type="text" name='firstName' className='form-control' value={regInput.firstName} onChange={(e) => handleRegistrationInputChange(e)}/>
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="firstName" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>First name </label>
+                    <input type="text" name='firstName' className="form-control border-0 text-end bg-light" value={regInput.firstName} onChange={(e) => handleRegistrationInputChange(e)}/>
                 </div>
                 {errors.registration.firstName ? <p className='text-warning'>{errors.registration.firstName}</p> : ""}
 
-                <div className="mb-3">
-                    <label htmlFor="lastName" className="form-input">Last name:</label>
-                    <input type="text" name='lastName' className='form-control' value={regInput.lastName} onChange={(e) => handleRegistrationInputChange(e)}/>
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="lastName" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Last name </label>
+                    <input type="text" name='lastName' className="form-control border-0 text-end bg-light" value={regInput.lastName} onChange={(e) => handleRegistrationInputChange(e)}/>
                 </div>
                 {errors.registration.lastName ? <p className='text-warning'>{errors.registration.lastName}</p> : ""}
 
-                <div className="mb-3">
-                    <label htmlFor="email" className="form-input">Email:</label>
-                    <input type="text" name='email' className='form-control' value={regInput.email} onChange={(e) => handleRegistrationInputChange(e)}/>
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="email" className="input-group-text border-0 " style={{backgroundColor: "#ffffff"}}>Email </label>
+                    <input type="email" name='email' className="form-control border-0 text-end bg-light" value={regInput.email} onChange={(e) => handleRegistrationInputChange(e)}/>
                 </div>
                 {errors.registration.email ? <p className='text-warning'>{errors.registration.email}</p> : ""}
 
-                <div className="mb-3">
-                    <label htmlFor="password" className="form-input">Password:</label>
-                    <input type="password" name='password' className='form-control' value={regInput.password} onChange={(e) => handleRegistrationInputChange(e)}/>
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="password" className="input-group-text border-0 " style={{backgroundColor: "#ffffff"}}>Password </label>
+                    <input type="password" name='password' className="form-control border-0 text-end bg-light" value={regInput.password} onChange={(e) => handleRegistrationInputChange(e)}/>
                 </div>
                 {errors.registration.password ? <p className='text-warning'>{errors.registration.password}</p> : ""}
 
-                <div className="mb-3">
-                    <label htmlFor="confirmPassword" className="form-input">Confirm Password:</label>
-                    <input type="password" name='confirmPassword' className='form-control' value={regInput.confirmPassword} onChange={(e) => handleRegistrationInputChange(e)}/>
+                <div className="input-group input-group-sm border-0 mb-3 px-2">
+                    <label htmlFor="confirmPassword" className="input-group-text border-0 " style={{backgroundColor: "#ffffff"}}>Confirm Password </label>
+                    <input type="password" name='confirmPassword' className="form-control border-0 text-end bg-light" value={regInput.confirmPassword} onChange={(e) => handleRegistrationInputChange(e)}/>
                 </div>
                 {errors.registration.confirmPassword ? <p className='text-warning'>{errors.registration.confirmPassword}</p> : ""}
 
-                <button type="submit">Register</button>
+                <button className="btn btn-sm w-100 rounded-top-0 " type="submit" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>Register</button>
 
             </form>
         </div>

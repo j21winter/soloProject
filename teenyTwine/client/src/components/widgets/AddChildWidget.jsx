@@ -1,9 +1,12 @@
 import React, {useContext, useState} from 'react'
 import UserContext from '../../context/userContext'
 import axios from 'axios'
+import { useNavigate } from 'react-router-dom'
 
 const AddChildWidget = () => {
-    const { user, setUser} = useContext(UserContext)
+    const { user, setUser, child, setChild} = useContext(UserContext)
+    const navigate = useNavigate()
+
 
     // Form Input
     const [childInput, setChildInput] = useState({
@@ -33,16 +36,16 @@ const AddChildWidget = () => {
     }
 
     // Validate the child input is correct
-    const validateNewChild = (child) => {
+    const validateNewChild = (childObj) => {
         let isValid = true
     
-        for( const field in child){
+        for( const field in childObj){
             if(field == ""){
                 console.log('empty fields')
                 isValid = false
             }
         }
-        if(child.parent != user._id){
+        if(childObj.parent != user._id){
             //! LOGOUT MAYBE
             console.log('incorrect user ID')
             isValid = false
@@ -52,14 +55,13 @@ const AddChildWidget = () => {
 
     const addChild = (e) => {
         e.preventDefault()
-        let child = {...childInput}
-        console.log(child)
+        let childObj = {...childInput}
         
-        if(!validateNewChild(child)){
+        if(!validateNewChild(childObj)){
             return console.log("errors with validation")
         }
 
-        axios.post('http://localhost:8000/api/child/new', child, {withCredentials: true}) //add authorization token
+        axios.post('http://localhost:8000/api/child/new', childObj, {withCredentials: true}) //add authorization token
             .then(res => {
                 // update user in dom 
                 setUser(prevUser => {
@@ -77,6 +79,11 @@ const AddChildWidget = () => {
                 })
                 // reset errors
                 setChildFormErrors({})
+
+                setChild(res.data.child)
+
+                navigate(`/user/child/${child._id}`)
+
             })
             .catch(err => {
                 let errors = err.response.data.error.errors
@@ -118,7 +125,7 @@ const AddChildWidget = () => {
             </div>            
             {childFormErrors.weight ? <p className='text-warning'>{childFormErrors.weight.message}</p> : ""}
 
-            <button className="btn btn-sm w-100 rounded-top-0 " style={{backgroundColor: "#84a59d", color: "#ffffff"}}>submit</button>
+            <button  type="submit" className="btn btn-sm w-100 rounded-top-0 " style={{backgroundColor: "#84a59d", color: "#ffffff"}}>submit</button>
 
         </form>
 

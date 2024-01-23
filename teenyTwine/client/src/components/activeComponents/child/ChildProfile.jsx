@@ -8,6 +8,8 @@ const ChildProfile = () => {
     const {user, setUser, child, setChild} = useContext(UserContext)
     const [currentChild, setCurrentChild] = useState(child)
     const [matches, setMatches] = useState([])
+    const [filterData, setFilterData] = useState({})
+    const [filterSelection, setFilterSelection] = useState("")
      // hold update form input
     const [updateInput, setUpdateInput] = useState({
       height: currentChild.height,
@@ -27,6 +29,7 @@ const ChildProfile = () => {
           })
         })
         .catch(err => console.log(err))
+
       axios.get(`http://localhost:8000/api/items/${currentChild.height}/${currentChild.weight}`, {withCredentials: true})
         .then(res => {
           setMatches(res.data)
@@ -40,9 +43,26 @@ const ChildProfile = () => {
       axios.get(`http://localhost:8000/api/items/${currentChild.height}/${currentChild.weight}`, {withCredentials: true})
         .then(res => {
           setMatches(res.data)
+          getFilterData(res.data)
         })
         .catch(err => console.log(err))
     },[currentChild])
+
+    // get filter data
+    const getFilterData = data => {
+
+      setFilterData({})
+      const filterList = {brands : [], sizes: []}
+      data.forEach(item => {
+          if(!filterList.hasOwnProperty(item.brand)){
+            filterList.brands[item.brand] = item.brand
+          }
+          if(!filterList.hasOwnProperty(item.size)){
+            filterList.sizes[item.size] = item.size
+          }
+      })
+      setFilterData(filterList)
+    }
 
     // convert date format long
     const convertDate = data => {
@@ -64,7 +84,6 @@ const ChildProfile = () => {
 
     // convert date format concise
     const convertDateConcise = data => {
-      console.log(data)
       const parts = data.split('T')
       const date = parts[0].split('-')
 
@@ -105,9 +124,9 @@ const ChildProfile = () => {
       let {height, weight} = currentChild
       let {minHeight, maxHeight, minWeight, maxWeight} = item
       if(height >= minHeight && height <= maxHeight && weight >= minWeight && weight <= maxWeight){
-        return (<p>100%</p>)
+        return "100%"
       } else {
-        return (<p>50%</p>)
+        return "50%"
       }
     }
 
@@ -183,23 +202,24 @@ const ChildProfile = () => {
           {/* use an onchange to sort matching list */}
           <form>
             <label htmlFor="filter">Filter by:</label>
-            <select name="filter" id="">
+            <select name="filter" id="filter" onChange={(e) => setFilterSelection(e.target.value)}>
               {/* POPULATE WITH OPTIONS FROM THE LIST */}
-              <option value="" disabled >Filter</option>
-            </select>
-          </form>
-          {/* use an onchange to sort matching list */}
-          <form>
-          <label htmlFor="sort">Sort by:</label>
-            <select name="sort" id="">
-              {/* POPULATE WITH OPTIONS FROM THE LIST */}
-              <option value="" disabled >Sort</option>
+              <option value="" disabled selected>Filter</option>
+              <option value={""}>All</option>
+              <option value="" className='text-center'disabled>-- Brands --</option>
+              {filterData.brands ? (Object.keys(filterData.brands).map((brandName) => (
+                <option key={brandName} value={brandName}> {brandName} </option>
+              ))) : ("")}
+              <option value="" disabled>-- Sizes --</option>
+              {filterData.sizes ? (Object.keys(filterData.sizes).map((sizeName) => (
+                <option key={sizeName} value={sizeName}> {sizeName} </option>
+              ))) : ("")}
             </select>
           </form>
         </div>
 
         {/* Match display */}
-        <div className="myTable d-flex justify-content-between overflow-scroll w-100 rounded rounded-2">
+        <div className="myTable d-flex justify-content-start overflow-scroll w-100 rounded rounded-2">
           <div className='p-1 text-start col-2' style={{width: "15%", color: '#26637b', backgroundColor: "#c0d6df"}}>
             <p className='mb-1'>Brand</p>
             <p className='mb-1'>Type</p>
@@ -207,7 +227,7 @@ const ChildProfile = () => {
             <p className='mb-3'>Match</p>
             <p className='mb-1'>Add To...</p>
           </div>
-          {matches.map((item) => (
+          {filterSelection ? (matches.filter((item) => item["brand"] === filterSelection || item["size"] == filterSelection).map((item) => (
             <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
               <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
               <p className='mb-1'>{item.type}</p>
@@ -224,8 +244,26 @@ const ChildProfile = () => {
 
                 </form>
               </div>
-          </div>
-          ))}
+          </div> 
+          ))) : ((matches.map((item) => (
+            <div key={item._id} className='text-center ms-1 m-0 p-0 bg-white rounded rounded-3 overflow-auto col-1 '>
+              <p className='fw-semibold mb-1' style={{backgroundColor:"#f7e1d7"}}>{item.brand}</p>
+              <p className='mb-1'>{item.type}</p>
+              <p className='mb-1'>{item.size}</p>
+              <p className='mb-1'>{matchType(item)}</p>
+              <div className=''>
+                <form onSubmit={(e) => addToWishList(e, item)} className='m-0'>
+                  <select name="addToList" id="addToList" className="border-0"style={{width: "90%"}}>
+                    {user.wishlists.map((wishlist) => (
+                      <option key={wishlist._id} value={wishlist._id} >{wishlist.title}</option>
+                      ))}
+                  </select>
+                  <button type='submit' className='w-100 btn m-0 btn-sm rounded-top-0 ' style={{backgroundColor: "#f7e1d7"}}>Add</button>
+
+                </form>
+              </div>
+          </div> 
+          ))))}
         </div>
       </div>
       
