@@ -95,31 +95,31 @@ const AddChildWidget = () => {
     
 
   return (
-    <div className='m-1 rounded rounded-2 overflow-auto shadow-lg ' style={{maxHeight: "49vh", backgroundColor: "#e9edc9"}}>
+    <div className='m-1 rounded rounded-2 overflow-auto shadow-lg w-100 ' style={{maxHeight: "49vh", backgroundColor: "#e9edc9"}}>
 
         <form onSubmit={ (e) => addChild(e)}>
             <div className='d-flex justify-content-between align-items-center ps-2 pe-2 mb-1'  style={{color: '#ffffff', backgroundColor: "#26637b"}}>
                 <p className='fs-5 ms-1 m-0'>Add a Child</p>
             </div>
-            <div className="input-group input-group-sm border-0 mb-1">
+            <div className="input-group input-group-sm border-0 mb-1 px-1 ">
                 <label htmlFor="name" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Name:</label>
                 <input type="text" name='name' className="form-control border-0 text-end" value={childInput.name} onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.name ? <p className='text-warning'>{childFormErrors.name.message}</p> : ""}
 
-            <div className="input-group input-group-sm mb-1">
+            <div className="input-group input-group-sm mb-1 px-1">
                 <label htmlFor="birthDate" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Birth Date:</label>
                 <input type="date" name="birthDate"className="form-control border-0 text-end" value={childInput.birthDate} onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.birthDate ? <p className='text-warning'>{childFormErrors.birthDate.message}</p> : ""}
 
-            <div className="input-group input-group-sm mb-1">
+            <div className="input-group input-group-sm mb-1 px-1">
                 <label htmlFor="height" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Height (in):</label>
                 <input type="number" name="height" className="form-control border-0 text-end" value={childInput.height} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>
             {childFormErrors.height ? <p className='text-warning'>{childFormErrors.height.message}</p> : ""}
 
-            <div className="input-group input-group-sm mb-1">
+            <div className="input-group input-group-sm mb-1 px-1">
                 <label htmlFor="weight" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Weight (lbs):</label>
                 <input type="number" name="weight"className="form-control border-0 text-end" value={childInput.weight} min={0} step="0.1" onChange={e => handleChange(e)}/>
             </div>            

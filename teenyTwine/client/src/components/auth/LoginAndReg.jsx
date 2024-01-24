@@ -25,7 +25,7 @@ const LoginAndReg = () => {
   return(
     <>
       <Header />
-      <div className='d-flex justify-content-evenly overflow-hidden '>
+      <div className='d-flex justify-content-evenly overflow-hidden mt-5'>
         <div className='w-50'>
           <RegForm errors={errors} setErrors={setErrors}/>
         </div>

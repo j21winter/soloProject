@@ -42,6 +42,24 @@ const carters = [
 
 ]
 
+const catAndJack = [
+    {brand: 'cat & jack', type: 'all', size:'preemie' , minWeight: 0, maxWeight: 5.5, minHeight: 0, maxHeight: 17.5},
+    {brand: 'cat & jack', type: 'all', size:'new born' , minWeight: 6, maxWeight: 8, minHeight: 18, maxHeight: 20},
+    {brand: 'cat & jack', type: 'all', size:'0 - 3M' , minWeight: 9, maxWeight: 12, minHeight: 20.5, maxHeight: 23.5},
+    {brand: 'cat & jack', type: 'all', size:'3 - 6M' , minWeight: 12.5, maxWeight: 16, minHeight: 24, maxHeight: 25.5},
+    {brand: 'cat & jack', type: 'all', size:'6 - 9M' , minWeight: 16.5, maxWeight: 19.5, minHeight: 26, maxHeight: 27.5},
+    {brand: 'cat & jack', type: 'all', size:'9 - 12M' , minWeight: 20, maxWeight: 23, minHeight: 28, maxHeight: 30.5},
+    {brand: 'cat & jack', type: 'all', size:'18M' , minWeight: 23.5, maxWeight: 26, minHeight: 31, maxHeight: 32.5},
+    {brand: 'cat & jack', type: 'all', size:'24M' , minWeight: 26.5, maxWeight: 28, minHeight: 33, maxHeight: 35.5},
+
+    {brand: 'cat & jack', type: 'toddler', size:'12M' , minWeight: 20, maxWeight: 23, minHeight: 28, maxHeight: 30.5},
+    {brand: 'cat & jack', type: 'toddler', size:'18M' , minWeight: 23.5, maxWeight: 26, minHeight: 31, maxHeight: 32.5},
+    {brand: 'cat & jack', type: 'toddler', size:'2T' , minWeight: 26.5, maxWeight: 28, minHeight: 33, maxHeight: 35.5},
+    {brand: 'cat & jack', type: 'toddler', size:'3T' , minWeight: 28.5, maxWeight: 32, minHeight: 36, maxHeight: 38.5},
+    {brand: 'cat & jack', type: 'toddler', size:'4T' , minWeight: 32.5, maxWeight: 37, minHeight: 39, maxHeight: 43},
+    {brand: 'cat & jack', type: 'toddler', size:'4T' , minWeight: 37.5, maxWeight: 42, minHeight: 43.5, maxHeight: 44.5},
+]
+
 async function setUp(sizeGuide){
     try{
         await mongoose.connect("mongodb://localhost:27017/teenyTwine", {
@@ -71,6 +89,7 @@ async function callSetUp(){
     try{
         await setUp(gerber)
         await setUp(carters)
+        await setUp(catAndJack)
     } catch (err) {
         console.log(err)
     }

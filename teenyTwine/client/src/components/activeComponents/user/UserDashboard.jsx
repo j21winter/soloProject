@@ -50,8 +50,10 @@ const UserDashboard = (props) => {
             </div>
 
             {/* Add A child form */}
-            <div className="widget d-flex align-items-start h-50">
+            <div className="widget d-flex align-items-start h-50 p-1">
+
               <AddChildWidget />
+
             </div>
           </div>
 
@@ -62,7 +64,7 @@ const UserDashboard = (props) => {
           </div>
 
           {/* RIGHT COLUMN */}
-          <div className="rightColumn col-2 d-flex flex-column justify-content-between pe-2">
+          <div className="rightColumn col-2 d-flex flex-column justify-content-between p-2 mh-100">
 
             {/* My Wishlist */}
             <div className="widget d-flex align-items-start h-50" style={{"maxHeight":"50%"}}>

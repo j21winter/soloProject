@@ -29,7 +29,7 @@ const WishListWidget = () => {
           ))) : (<p className='text-center m-1 p-1 border border-dark-subtle shadow rounded-2' style={{backgroundColor: "rgb(192, 214, 223)"}}>No wishlists right now</p>)}
         </div>
 
-          <Link to={'/wishlist'} className='btn btn-sm w-100 rounded-top-0 sticky-bottom' style={{backgroundColor: "#84a59d", color: "#ffffff"}}>View & Create Wishlists</Link>
+          <Link to={'/user/wishlist'} className='btn btn-sm w-100 rounded-top-0 sticky-bottom' style={{backgroundColor: "#84a59d", color: "#ffffff"}}>View & Create Wishlists</Link>
 
   </div>
   )

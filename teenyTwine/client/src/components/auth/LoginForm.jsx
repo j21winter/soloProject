@@ -87,7 +87,7 @@ const LoginForm = (props) => {
 
   return (
     <>
-        <div id='login' className='card p-0 m-2 w-100 rounded rounded 2 overflow-hidden h-auto' style={{ backgroundColor: "#26637b"}}>
+        <div id='login' className='card p-0 m-2 w-100 rounded rounded 2 overflow-hidden h-auto border-0 ' style={{ backgroundColor: "#26637b"}}>
 
 
             {/* LOGIN FORM */}
@@ -101,14 +101,14 @@ const LoginForm = (props) => {
                     <label htmlFor="email" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Email </label>
                     <input type="email" name='email' className="form-control border-0 text-end" value={loginInput.email} onChange={(e) => handleLoginInputChange(e)}/>
                 </div>
-                {errors.login.email ? <p className='text-warning'>{errors.login.email}</p> : ""}
+                {errors.login.email ? <p className='text-white text-center'>{errors.login.email}</p> : ""}
 
                 <div className="input-group input-group-sm border-0 mb-3 px-2">
                     <label htmlFor="password" className="input-group-text border-0" style={{backgroundColor: "#ffffff"}}>Password </label>
                     <input type="password" name='password' className="form-control border-0 text-end" value={loginInput.password} onChange={(e) => handleLoginInputChange(e)}/>
                 </div>
-                {errors.login.password ? <p className='text-warning'>{errors.login.password}</p> : ""}
-                {errors.login.error ? <p className='text-warning'>{errors.login.error}</p> : ""}
+                {errors.login.password ? <p className='text-white text-center'>{errors.login.password}</p> : ""}
+                {errors.login.error ? <p className='text-white text-center'>{errors.login.error}</p> : ""}
                 
                 <button className="btn btn-sm w-100 rounded-top-0 " type="submit" style={{backgroundColor: "#84a59d", color: "#ffffff"}}>Login</button>
 
