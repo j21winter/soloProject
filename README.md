@@ -1,5 +1,9 @@
 # 👕 Twine Child Clothing Application 
 
+## 💻 Local host run information 
+Client - npm run dev
+Server - npm start
+
 ## 📝 Project Description
 
 This application aims to combat the one of the constant facts in life, kids grow up quickly! Finding clothing that fits your child correctly can be difficult. This platform allows users to track, identify, save and share their cloths that fit their child right now. Whether it be a baby shower, birthday or special event, Teeny Twine will allow you to know what to buy. 
